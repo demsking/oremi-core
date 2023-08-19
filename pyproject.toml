@@ -27,9 +27,6 @@ packages = [
   { include = "oremi" },
 ]
 
-[tool.poetry.scripts]
-oremi-core = 'oremi:start'
-
 [tool.poetry.urls]
 "Say Thanks!" = "https://www.buymeacoffee.com/demsking"
 "Source" = "https://gitlab.com/demsking/oremi-core"

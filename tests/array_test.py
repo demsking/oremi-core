@@ -1,4 +1,4 @@
-from oremi.array import flatten
+from oremi.core.array import flatten
 
 
 def test_flatten_empty_list():

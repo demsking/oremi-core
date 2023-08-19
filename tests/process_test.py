@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from oremi.process import is_installed
+from oremi.core.process import is_installed
 
 
 def test_is_installed_installed():

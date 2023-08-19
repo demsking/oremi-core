@@ -2,7 +2,7 @@ import logging
 import logging.handlers
 from unittest.mock import call, patch
 
-from oremi.logger import Logger, OremiFormatter
+from oremi.core.logger import Logger, OremiFormatter
 
 
 def test_oremi_formatter_formatting():
@@ -43,8 +43,8 @@ def test_logger_constructor():
   assert mock_stream_handler.called
   assert mock_file_handler.called
 
-def test_logger_setglobal_level():
-  Logger.setglobal_level(logging.INFO)
+def test_logger_set_global_level():
+  Logger.set_global_level(logging.INFO)
   assert Logger.global_level == logging.INFO
 
 def test_logger_create():
