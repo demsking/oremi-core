@@ -4,11 +4,11 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "oremi-core"
-version = "1.0.0.dev1"
+version = "1.0.0.dev2"
 description = "The cornerstone of the Oremi ecosystem"
 keywords = ["oremi", "core", "utils"]
 authors = ["Sébastien Demanou <demsking@gmail.com>"]
-license = "MIT"
+license = "Apache-2.0"
 readme = "README.md"
 repository = "https://gitlab.com/demsking/oremi-core"
 documentation = "https://gitlab.com/demsking/oremi-core/-/blob/main/README.md"
@@ -18,7 +18,7 @@ classifiers = [
   "Intended Audience :: Developers",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: Software Development :: Localization",
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: Apache-2.0",
   "Operating System :: POSIX :: Linux",
   "Programming Language :: Python :: 3.10",
 ]

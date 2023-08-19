@@ -39,8 +39,7 @@ clean:
 	rm -rf dist/
 
 # Build a distribution of the project using poetry and twine
-dist:
-	rm -rf dist/
+dist: clean
 	poetry build
 	twine check dist/*
 
