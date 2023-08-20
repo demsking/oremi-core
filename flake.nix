@@ -56,7 +56,7 @@
               pre-commit install -f
             '';
             EDITOR = "vim";
-            COMPOSE_PROJECT = "oremi";
+            PATH = "${ruff}/bin:$PATH";
           };
       });
 }
