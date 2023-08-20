@@ -57,6 +57,16 @@ class EventManager(Generic[EventType, EventData]):
       if len(self._subscribers[event_type]) == 0:
         del self._subscribers[event_type]
 
+  def clear(self, event_type: EventType) -> None:
+    """
+    Unsubscribe all listeners using event type.
+
+    Args:
+      event_type (EventType): The event type to unsubscribe from.
+    """
+    if event_type in self._subscribers:
+      del self._subscribers[event_type]
+
   async def trigger(self, event_type: EventType, event_data: EventData) -> None:
     """
     Trigger an event of a specific type.
