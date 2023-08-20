@@ -26,6 +26,7 @@ lint:
   needs:
     - env setup
   script:
+    - chmod +x ./ci/fix-pre-commit-setup.sh
     - nix develop --command ./ci/fix-pre-commit-setup.sh
     - nix develop --command bash -c 'make lint'
 
