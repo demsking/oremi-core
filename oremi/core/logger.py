@@ -56,39 +56,44 @@ class Logger(logging.Logger):
   def __init__(self, name: str, *, level: int | None = None, filename: str | None = None) -> None:
     super().__init__(name, level = level if isinstance(level, int) else Logger.global_level)
 
+    self.log_filename = filename
+
     formatter = OremiFormatter()
     console_handler = logging.StreamHandler()
-    rotating_file_handler = handlers.RotatingFileHandler(
-      filename = filename if filename else f'{name}.log',
-      maxBytes = 10 * 1024 * 1024, # 10MB
-      encoding = 'utf-8',
-      backupCount = 100,
-    )
 
     console_handler.setFormatter(formatter)
-    rotating_file_handler.setFormatter(formatter)
-
     self.setLevel(Logger.global_level)
     self.addHandler(console_handler)
-    self.addHandler(rotating_file_handler)
+
+    if filename:
+      rotating_file_handler = handlers.RotatingFileHandler(
+        filename = filename if filename else f'{name}.log',
+        maxBytes = 10 * 1024 * 1024, # 10MB
+        encoding = 'utf-8',
+        backupCount = 100,
+      )
+
+      rotating_file_handler.setFormatter(formatter)
+      self.addHandler(rotating_file_handler)
 
   @classmethod
   def set_global_level(cls, level: int) -> None:
     cls.global_level = level
 
   @classmethod
-  def create(cls, name: str, level: int | None = None) -> 'Logger':
+  def create(cls, name: str, *, level: int | None = None, filename: str | None = None) -> 'Logger':
     """
-    Creates a Trace logger instance with the specified name.
+    Creates a logger instance with the specified name.
 
     Args:
       name (str): The name of the logger.
       level (int): The logger level.
+      filename (str): The name of the logger file.
 
     Returns:
-      Logger: A Trace logger instance.
+      Logger: A logger instance.
     """
-    logger = cls(name, level = level)
+    logger = cls(name, level = level, filename = filename)
 
     coloredlogs.install(
       logger = logger,
@@ -100,12 +105,12 @@ class Logger(logging.Logger):
 
   def clone(self, name: str) -> 'Logger':
     """
-    Clones the Trace logger with a new name.
+    Clones the logger with a new name.
 
     Args:
       name (str): The name of the cloned logger.
 
     Returns:
-      Trace: A cloned Trace logger instance with the new name.
+      Logger: A cloned logger instance with the new name.
     """
-    return Logger.create(f'{self.name} - {name}', self.level)
+    return Logger.create(f'{self.name} - {name}', level = self.level, filename = self.log_filename)

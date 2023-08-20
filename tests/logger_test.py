@@ -34,9 +34,17 @@ def test_oremi_formatter_format_exception():
   assert result == expected_output
 
 def test_logger_constructor():
+  with patch('logging.StreamHandler') as mock_stream_handler:
+    logger = Logger('test_logger')
+
+  assert isinstance(logger, Logger)
+  assert len(logger.handlers) == 1
+  assert mock_stream_handler.called
+
+def test_logger_constructor_with_filename():
   with patch('logging.StreamHandler') as mock_stream_handler, \
         patch('logging.handlers.RotatingFileHandler') as mock_file_handler:
-    logger = Logger('test_logger')
+    logger = Logger('test_logger', filename = 'app.log')
 
   assert isinstance(logger, Logger)
   assert len(logger.handlers) == 2
@@ -47,9 +55,34 @@ def test_logger_set_global_level():
   Logger.set_global_level(logging.INFO)
   assert Logger.global_level == logging.INFO
 
+def test_logger_create_without_filename():
+  with patch('coloredlogs.install') as mock_coloredlogs:
+    logger = Logger.create('test_logger')
+
+  assert isinstance(logger, Logger)
+  assert mock_coloredlogs.called
+
+  expected_coloredlogs_calls = [
+    call(logger=logger, fmt='%(asctime)s - %(name)s - %(levelname)-s - %(message)s', level=Logger.global_level)
+  ]
+  mock_coloredlogs.assert_has_calls(expected_coloredlogs_calls)
+
 def test_logger_create():
   with patch('coloredlogs.install') as mock_coloredlogs:
     logger = Logger.create('test_logger')
+
+  assert isinstance(logger, Logger)
+  assert len(logger.handlers) == 1
+  assert mock_coloredlogs.called
+
+  expected_coloredlogs_calls = [
+    call(logger=logger, fmt='%(asctime)s - %(name)s - %(levelname)-s - %(message)s', level=Logger.global_level)
+  ]
+  mock_coloredlogs.assert_has_calls(expected_coloredlogs_calls)
+
+def test_logger_create_with_filename():
+  with patch('coloredlogs.install') as mock_coloredlogs:
+    logger = Logger.create('test_logger', filename = 'app.log')
 
   assert isinstance(logger, Logger)
   assert len(logger.handlers) == 2
