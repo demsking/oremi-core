@@ -1,5 +1,5 @@
 from _typeshed import Incomplete
-from typing import Callable, Coroutine
+from collections.abc import Callable, Coroutine
 
 class Timer:
     delay: Incomplete

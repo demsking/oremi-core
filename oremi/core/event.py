@@ -14,7 +14,8 @@
 # ==============================================================================
 
 import asyncio
-from typing import Callable, Coroutine, Generic, TypeVar
+from typing import Generic, TypeVar
+from collections.abc import Callable, Coroutine
 
 EventType = TypeVar('EventType')
 EventData = TypeVar('EventData')

@@ -1,7 +1,8 @@
 import unqlite
 from _typeshed import Incomplete
+from collections.abc import Callable
 from pydantic import BaseModel
-from typing import Callable, Generic, Type, TypeVar
+from typing import Generic, TypeVar
 
 T = TypeVar('T')
 
@@ -16,7 +17,7 @@ class Collection(unqlite.Collection, Generic[T]):
     def update(self, record: T): ...
 
 class CollectionTable(unqlite.Collection):
-    __model__: Type[Model]
+    __model__: type[Model]
     def all(self): ...
     def append(self, record: Model): ...
     def update(self, record: Model): ...

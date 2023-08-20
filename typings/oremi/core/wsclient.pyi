@@ -2,7 +2,8 @@ import websockets.typing
 from .event import EventData, EventType
 from .logger import Logger
 from _typeshed import Incomplete
-from typing import Callable, Coroutine, Generic
+from collections.abc import Callable, Coroutine
+from typing import Generic
 
 WebsocketClientEventType: Incomplete
 WebsocketClientEventData: Incomplete

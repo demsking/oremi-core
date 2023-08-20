@@ -1,4 +1,5 @@
-from typing import Callable, Coroutine, Generic, TypeVar
+from collections.abc import Callable as Callable, Coroutine
+from typing import Generic, TypeVar
 
 EventType = TypeVar('EventType')
 EventData = TypeVar('EventData')

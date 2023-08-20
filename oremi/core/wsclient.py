@@ -15,7 +15,8 @@
 
 import asyncio
 import json
-from typing import Callable, Coroutine, Generic, Literal
+from typing import Generic, Literal
+from collections.abc import Callable, Coroutine
 
 import websockets.exceptions
 import websockets.legacy.client

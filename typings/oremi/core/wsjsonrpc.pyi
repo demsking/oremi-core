@@ -1,6 +1,7 @@
 from .logger import Logger
 from .wsclient import WebsocketClient, WebsocketClientOnConnect, WebsocketClientOnMessage
-from typing import Any, Callable, Coroutine
+from collections.abc import Callable, Coroutine
+from typing import Any
 
 ResponseCallback = Callable[[Any], Coroutine[None, None, None]]
 

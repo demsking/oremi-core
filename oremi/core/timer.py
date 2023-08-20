@@ -14,7 +14,7 @@
 # ==============================================================================
 
 import asyncio
-from typing import Callable, Coroutine
+from collections.abc import Callable, Coroutine
 
 __all__ = [
   'Timer',

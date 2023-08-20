@@ -1,5 +1,6 @@
 import functools
-from typing import Any, Callable, Generic, Type, TypeVar
+from typing import Any, Generic, TypeVar
+from collections.abc import Callable
 
 import unqlite
 from pydantic import BaseModel, PrivateAttr
@@ -41,7 +42,7 @@ class Collection(Generic[T], unqlite.Collection):
 
 
 class CollectionTable(unqlite.Collection):
-  __model__: Type[Model]
+  __model__: type[Model]
 
   def all(self):
     return [
@@ -94,7 +95,7 @@ class MissingViewAnnotationError(TypeError):
 def __configure_field(
   cls,
   defaults: dict[str, Any],
-  models: dict[str, Type[Model]],
+  models: dict[str, type[Model]],
   collections: list[str],
   computed: dict[str, View],
   field_name: str,
@@ -110,7 +111,7 @@ def __configure_field(
 
 def __configure_field_property(
   cls,
-  models: dict[str, Type[Model]],
+  models: dict[str, type[Model]],
   collections: list[str],
   computed: dict[str, View],
   field_name: str,
@@ -162,11 +163,11 @@ class Store:
 M = TypeVar('M')
 
 
-def store(cls: Type[DatabaseModelType]) -> Callable[[unqlite.UnQLite], DatabaseModelType]:
+def store(cls: type[DatabaseModelType]) -> Callable[[unqlite.UnQLite], DatabaseModelType]:
   collections: list[str] = []
   defaults: dict[str, Any] = {}
   computed: dict[str, View] = {}
-  models: dict[str, Type[Model]] = {}
+  models: dict[str, type[Model]] = {}
 
   for key, value in cls.__dict__.items():
     if isinstance(value, View) and key not in cls.__annotations__:

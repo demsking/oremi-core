@@ -15,7 +15,8 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Type, TypeVar, cast
+from typing import Any, TypeVar, cast
+from collections.abc import Callable
 
 import dateutil.parser # pylint: disable=import-error
 
@@ -28,7 +29,7 @@ def from_str(value: Any) -> str:
   return value
 
 
-def to_enum(class_type: Type[EnumT], value: Any) -> EnumT:
+def to_enum(class_type: type[EnumT], value: Any) -> EnumT:
   assert isinstance(value, class_type)
   return value.value
 
@@ -67,7 +68,7 @@ def to_float(value: Any) -> float:
   return value
 
 
-def to_class(class_type: Type[T], value: Any) -> T:
+def to_class(class_type: type[T], value: Any) -> T:
   assert isinstance(value, class_type)
   return cast(Any, value).to_dict()
 
