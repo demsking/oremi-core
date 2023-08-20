@@ -13,26 +13,27 @@ cache:
     - dist/
 
 before_script:
-  - nix-shell
+  - echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+  - nix develop
 
 env setup:
   stage: setup
   script:
-    - nix-shell --run 'make install'
+    - nix develop --command bash -c 'make install'
 
 lint:
   stage: test
   needs:
     - env setup
   script:
-    - nix-shell --run 'make lint'
+    - nix develop --command bash -c 'make lint'
 
 tests and coverage:
   stage: test
   needs:
     - env setup
   script:
-    - nix-shell --run 'make coverage'
+    - nix develop --command bash -c 'make coverage'
   coverage: '/TOTAL\s+\d+\s+\d+\s+([\d\.]+)%/'
 
 build distribution files:
@@ -41,7 +42,7 @@ build distribution files:
     - lint
     - tests and coverage
   script:
-    - nix-shell --run 'make dist'
+    - nix develop --command bash -c 'make dist'
   artifacts:
     paths:
       - dist/*.whl
@@ -54,4 +55,4 @@ publish on pypi:
   only:
     - tags
   script:
-    - nix-shell --run 'twine upload --non-interactive --disable-progress-bar -r testpypi -u __token__ -p "$PYPI_TOKEN" dist/*'
+    - nix develop --command bash -c 'twine upload --non-interactive --disable-progress-bar -r testpypi -u __token__ -p "$PYPI_TOKEN" dist/*'
