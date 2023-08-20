@@ -1,4 +1,4 @@
-.PHONY: all clean test install ist
+.PHONY: all clean test install stubs
 
 # Start the development environment using tmuxinator
 env:
@@ -38,11 +38,11 @@ update:
 clean:
 	rm -rf dist/
 
-stub:
-	stubgen -v --package oremi -o typings
+stubs:
+	stubgen -v --package oremi -o stubs
 
 # Build a distribution of the project using poetry and twine
-dist: clean stub
+dist: clean stubs
 	poetry build
 	twine check dist/*
 

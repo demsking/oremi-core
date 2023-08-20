@@ -43,7 +43,7 @@
     "**/site-packages/**/*.py",
     ".vscode/*.py",
     ".*_test.py",
-    "typings/**/*.py"
+    "stubs/**/*.py"
   ],
   "python.testing.pytestArgs": [
     "tests"

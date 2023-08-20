@@ -22,7 +22,7 @@ repos:
     hooks:
       - id: ruff
         files: oremi/*
-        args: ['--exclude', 'typings/*']
+        args: ['--exclude', 'stubs/*']
   - repo: https://github.com/mrtazz/checkmake.git
     rev: 0.2.2
     hooks:
@@ -44,3 +44,10 @@ repos:
           - "-rn" # Only display messages
           - "--errors-only"
           - "--ignore-paths=tests,.vscode,.gitlab"
+ci:
+  autofix_commit_msg: "[pre-commit.ci] auto fixes from pre-commit.com hooks"
+  autofix_prs: true
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_schedule: quarterly
+  skip: [ruff]
+  submodules: false
