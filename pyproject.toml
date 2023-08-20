@@ -39,6 +39,7 @@ coloredlogs = "^15.0.1"
 paho-mqtt = "^1.6.1"
 websockets = "^11.0.3"
 pydantic = "^2.1.1"
+unqlite = "^0.9.6"
 
 [tool.poetry.group.dev.dependencies]
 pyyaml = "^6.0"
