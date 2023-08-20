@@ -14,20 +14,14 @@
         devShell =
           with pkgs; mkShell rec {
             buildInputs = [
-              git
-              curl
-              tmux
-              ruff
-              gitmux
-              which
-              nodejs
-              poetry
-              check-jsonschema
-              gnutar
-              gnumake
-              checkmake
-              pre-commit
+              # tmux
               tmuxinator
+              tmux
+              gitmux
+              git
+
+              # python
+              poetry
               python310
               python310Packages.pip
               python310Packages.wheel
@@ -35,6 +29,17 @@
               python310Packages.twine
               python310Packages.setuptools
               python310Packages.virtualenv
+
+              # pre-commit
+              pre-commit
+              ruff
+              check-jsonschema
+              gnumake
+              checkmake
+              stdenv.cc.cc.libgcc
+              autoPatchelfHook
+              which
+              nodejs
               python310Packages.pre-commit-hooks
             ];
             shellHook = ''
@@ -54,9 +59,21 @@
 
               # Install pre-commit hooks
               pre-commit install -f
+
+              # oddly the python pre-commit hook doesn't actually install things during install
+              # here's a hack to force ruff into the pre-commit cache (works but is not great)
+              pre-commit run
+
+              # pre-commits output is a bit verbose when it succeeds, choose your own output wrangling
+              patch=$(autoPatchelf ~/.cache/pre-commit/)
+              if [[ $? -ne 0 ]]; then
+                echo "$patch"
+                exit 1
+              else
+                echo "patched ~/.cache/pre-commit"
+              fi
             '';
             EDITOR = "vim";
-            PATH = "${ruff}/bin:$PATH";
           };
       });
 }
