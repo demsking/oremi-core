@@ -22,19 +22,26 @@ __all__ = [
   'split_data',
 ]
 
+
 class Data(TypedDict):
+  code: int
   text: str
   label: str
 
 
+class CodeName(TypedDict):
+  code: int
+  name: str
+
+
 def split_data(
   cvs_filename: str,
-  delimiter = ',',
-  test_size = 0.2,
-  shuffle = True,
-  header_label = 'label',
-  header_text = 'text'
-):
+  delimiter: str = ',',
+  test_size: float = 0.2,
+  shuffle: bool = True,
+  header_label: str = 'label',
+  header_text: str = 'text'
+) -> tuple[list[str], list[Data], list[Data], dict[str, list[Data]]]:
   """Split data from a CSV file into train and validation sets.
 
   This function reads data from a CSV file with the specified filename and splits it into train and validation sets.
@@ -53,9 +60,9 @@ def split_data(
     validation_data (list): A list of tuples containing the validation data, where each tuple has two elements: the label and the text.
   """
 
-  labels = []
-  train_data = []
-  validation_data = []
+  labels: list[str] = []
+  train_data: list[Data] = []
+  validation_data: list[Data] = []
 
   with open(cvs_filename, encoding = 'utf-8') as file:
     reader = csv.reader(file, delimiter=delimiter)
@@ -63,9 +70,9 @@ def split_data(
     index_name = headers.index(header_label)
     index_text = headers.index(header_text)
 
-    data_by_label = {}
-    index_by_label = {}
-    labels_items = []
+    data_by_label: dict[str, list[Data]] = {}
+    index_by_label: dict[str, int] = {}
+    labels_items: list[CodeName] = []
     index = 0
 
     for index, line in enumerate(reader):

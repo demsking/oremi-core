@@ -21,6 +21,8 @@ repos:
     rev: v0.0.284
     hooks:
       - id: ruff
+        files: oremi/*
+        args: ['--exclude', 'typings/*']
   - repo: https://github.com/mrtazz/checkmake.git
     rev: 0.2.2
     hooks:

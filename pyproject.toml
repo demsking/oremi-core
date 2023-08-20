@@ -27,6 +27,10 @@ packages = [
   { include = "oremi" },
 ]
 
+include = [
+  "typings",
+]
+
 [tool.poetry.urls]
 "Say Thanks!" = "https://www.buymeacoffee.com/demsking"
 "Source" = "https://gitlab.com/demsking/oremi-core"
@@ -40,6 +44,7 @@ paho-mqtt = "^1.6.1"
 websockets = "^11.0.3"
 pydantic = "^2.1.1"
 unqlite = "^0.9.6"
+python-dateutil = "^2.8.2"
 
 [tool.poetry.group.dev.dependencies]
 pyyaml = "^6.0"
@@ -50,6 +55,18 @@ pluggy = "^1.0.0"
 pytest-asyncio = "^0.21.0"
 pylint = {extras = ["spelling"], version = "^2.17.4"}
 pylint-pydantic = "^0.2.4"
+mypy = "^1.5.1"
+types-python-dateutil = "^2.8.19.14"
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+check_untyped_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+no_implicit_optional = true
+warn_return_any = true
+warn_unused_configs = true
+no-untyped-def = true
 
 [tool.pytest.ini_options]
 # Function starting with the following pattern are considered for test cases.

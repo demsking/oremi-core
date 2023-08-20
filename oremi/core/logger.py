@@ -16,6 +16,7 @@
 import logging
 import logging.handlers as handlers
 import traceback
+from typing import Any
 
 import coloredlogs
 
@@ -30,16 +31,16 @@ _format = '%(asctime)s - %(name)s - %(levelname)-s - %(message)s'
 class OremiFormatter(logging.Formatter):
   def __init__(
     self,
-    fmt = _format,
-    datefmt = '%Y-%m-%d %H:%M:%S',
-    style = '%',
-    validate = True,
-  ):
+    fmt: str = _format,
+    datefmt: str = '%Y-%m-%d %H:%M:%S',
+    style: str = '%',
+    validate: bool = True,
+  ) -> None:
     super().__init__(fmt, datefmt, style, validate) # type: ignore
     self.error_fmt = '%(asctime)s - %(name)s - %(levelname)-s - %(message)s'
     self.error_formatter = logging.Formatter(self.error_fmt, datefmt)
 
-  def formatException(self, ei):
+  def formatException(self, ei: Any) -> str:
     tb = ''.join(traceback.format_exception(*ei))
     last_line = tb.rstrip().split('\n')[-1]
     file_name, line_number, function_name, _ = traceback.extract_tb(ei[2])[-1]
@@ -52,7 +53,7 @@ class Logger(logging.Logger):
   """
   global_level = logging.DEBUG
 
-  def __init__(self, name: str, *, level: int | None = None, filename: str | None = None):
+  def __init__(self, name: str, *, level: int | None = None, filename: str | None = None) -> None:
     super().__init__(name, level = level if isinstance(level, int) else Logger.global_level)
 
     formatter = OremiFormatter()
@@ -72,11 +73,11 @@ class Logger(logging.Logger):
     self.addHandler(rotating_file_handler)
 
   @classmethod
-  def set_global_level(cls, level: int):
+  def set_global_level(cls, level: int) -> None:
     cls.global_level = level
 
   @classmethod
-  def create(cls, name: str, level: int | None = None):
+  def create(cls, name: str, level: int | None = None) -> 'Logger':
     """
     Creates a Trace logger instance with the specified name.
 
@@ -97,7 +98,7 @@ class Logger(logging.Logger):
 
     return logger
 
-  def clone(self, name: str):
+  def clone(self, name: str) -> 'Logger':
     """
     Clones the Trace logger with a new name.
 

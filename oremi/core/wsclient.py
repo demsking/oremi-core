@@ -49,7 +49,7 @@ class WebsocketClient(Generic[EventType, EventData]):
     logger: Logger,
     on_connected: WebsocketClientOnConnect | None = None,
     on_message: WebsocketClientOnMessage,
-  ):
+  ) -> None:
     self._uri = uri
     self.user_agent = user_agent
     self.logger = logger
@@ -57,7 +57,7 @@ class WebsocketClient(Generic[EventType, EventData]):
     self._on_connected = on_connected
     self._on_message = on_message
 
-  async def connect(self):
+  async def connect(self) -> None:
     self.logger.info(f'Connecting to {self._uri}')
     async for websocket in connect(self._uri, user_agent_header = self.user_agent, close_timeout = 0):
       self.ws = websocket
@@ -79,14 +79,14 @@ class WebsocketClient(Generic[EventType, EventData]):
         if not self.connected:
           break
 
-  async def send_data(self, data: websockets.typing.Data):
+  async def send_data(self, data: websockets.typing.Data) -> None:
     await self.ws.send(data)
 
-  async def send_json(self, message: dict | list):
+  async def send_json(self, message: dict | list) -> None:
     payload = json.dumps(message)
     await self.ws.send(payload)
 
-  async def disconnect(self):
+  async def disconnect(self) -> None:
     self.connected = False
 
     if not self.ws.closed:

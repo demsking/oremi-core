@@ -53,7 +53,7 @@ def from_none(value: Any) -> Any:
   return value
 
 
-def from_union(fs, values):
+def from_union(fs, values) -> Any:
   for fn in fs:
     try:
       return fn(values)
@@ -67,7 +67,7 @@ def to_float(value: Any) -> float:
   return value
 
 
-def to_class(class_type: Type[T], value: Any) -> dict:
+def to_class(class_type: Type[T], value: Any) -> T:
   assert isinstance(value, class_type)
   return cast(Any, value).to_dict()
 

@@ -61,7 +61,7 @@ class View(Generic[T]):
     *,
     collection_name: str,
     filter_factory: Callable[[], Callable[[dict], bool]],
-  ):
+  ) -> None:
     self.collection_name = collection_name
     self.filter_factory = filter_factory
 
@@ -99,7 +99,7 @@ def __configure_field(
   computed: dict[str, View],
   field_name: str,
   field_type: Any,
-):
+) -> None:
   if field_name in cls.__dict__:
     if isinstance(cls.__dict__[field_name], (Collection, View)):
       computed[field_name] = cls.__dict__[field_name]
@@ -115,7 +115,7 @@ def __configure_field_property(
   computed: dict[str, View],
   field_name: str,
   field_type: Any,
-):
+) -> None:
   if field_type.__name__ == Collection.__name__:
     if '__args__' in field_type.__dict__ and len(field_type.__dict__['__args__']) > 0:
       models[field_name] = field_type.__dict__['__args__'][0]
@@ -175,7 +175,7 @@ def store(cls: Type[DatabaseModelType]) -> Callable[[unqlite.UnQLite], DatabaseM
   for field_name, field_type in cls.__annotations__.items():
     __configure_field(cls, defaults, models, collections, computed, field_name, field_type)
 
-  def configure_collection(self, db: unqlite.UnQLite, colname: str):
+  def configure_collection(self, db: unqlite.UnQLite, colname: str) -> None:
     model_class = models[colname]
     collection: unqlite.Collection = CollectionTable(db, colname)
     collection.__model__ = model_class
@@ -186,7 +186,7 @@ def store(cls: Type[DatabaseModelType]) -> Callable[[unqlite.UnQLite], DatabaseM
     setattr(self, colname, collection)
 
   @functools.wraps(cls)
-  def constructor(self: DatabaseModelType, db: unqlite.UnQLite):
+  def constructor(self: DatabaseModelType, db: unqlite.UnQLite) -> None:
     setattr(self, '__db', db)
     setattr(self, 'commit', lambda: db.commit())
 

@@ -1,5 +1,5 @@
 import unqlite
-from unqlite import UnQLite
+from unqlite import UnQLite # pylint: disable=no-name-in-module
 
 from .decorators import (
   Collection,

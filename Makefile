@@ -6,7 +6,7 @@ env:
 
 # Run linting checks on the codebase using pre-commit
 lint:
-	pre-commit run --all-files
+	pre-commit run --all-files --verbose
 
 # Automatically fix any linting issues found by ruff
 fix:
@@ -38,8 +38,11 @@ update:
 clean:
 	rm -rf dist/
 
+stub:
+	stubgen -v --package oremi -o typings
+
 # Build a distribution of the project using poetry and twine
-dist: clean
+dist: clean stub
 	poetry build
 	twine check dist/*
 

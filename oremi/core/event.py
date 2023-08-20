@@ -25,7 +25,7 @@ class EventManager(Generic[EventType, EventData]):
   A generic event manager class that allows for event subscriptions and triggering.
   """
 
-  def __init__(self):
+  def __init__(self) -> None:
     """
     Initialize the event manager.
     """

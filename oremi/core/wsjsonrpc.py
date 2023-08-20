@@ -36,7 +36,7 @@ class WebsocketJsonRpcClient(WebsocketClient):
     logger: Logger,
     on_connected: WebsocketClientOnConnect | None = None,
     on_message: WebsocketClientOnMessage,
-  ):
+  ) -> None:
     super().__init__(uri, user_agent = user_agent, logger = logger, on_connected = on_connected, on_message = self._parse_message)
 
     self._on_message = on_message
@@ -44,7 +44,7 @@ class WebsocketJsonRpcClient(WebsocketClient):
     self._error_callbacks: dict[int, ResponseCallback] = {}
     self._request_id = 1
 
-  async def _parse_message(self, message: WebsocketClientEventData):
+  async def _parse_message(self, message: WebsocketClientEventData) -> None:
     data = json.loads(message)
 
     if 'id' in data:
@@ -59,11 +59,9 @@ class WebsocketJsonRpcClient(WebsocketClient):
         if request_id in self._request_callbacks:
           await self._request_callbacks[request_id](data['result'])
           del self._request_callbacks[request_id]
-    elif self._on_message:
+    else:
       self.logger.debug(f'Message from {self._uri}: {message}')
       await self._on_message(data)
-    else:
-      self.logger.warn(f'Unhandled message from {self._uri}: {message}')
 
   async def send_request(
     self,
@@ -72,7 +70,7 @@ class WebsocketJsonRpcClient(WebsocketClient):
     *,
     on_response: ResponseCallback | None = None,
     on_error: ResponseCallback | None = None,
-  ):
+  ) -> None:
     self.logger.debug(f'{self._uri}: Calling JSON-RPC method "{method}" ({self._request_id}) with params {params}')
     data = {
       'id': self._request_id,

@@ -48,11 +48,11 @@ class Timer:
     """
     return self._task is not None
 
-  async def _run(self):
+  async def _run(self) -> None:
     await self._fn()
     self._task = None
 
-  def start(self):
+  def start(self) -> None:
     """
     Starts the timer and schedules the provided function to be called after the specified timeout.
     """
@@ -60,7 +60,7 @@ class Timer:
       loop = asyncio.get_running_loop()
       self._task = loop.call_later(self.delay, lambda: asyncio.create_task(self._run(), name = f'Timer {self.delay}s Task'))
 
-  def cancel(self):
+  def cancel(self) -> None:
     """
     Cancels the running timer and stops the function from being executed.
     """
