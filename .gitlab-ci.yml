@@ -32,16 +32,7 @@ lint:
     - nix develop --command bash -c 'pre-commit run'
     # pre-commits output is a bit verbose when it succeeds, choose your own
     # output wrangling
-    - |
-      nix develop --command bash -c '
-        patch=$(autoPatchelf ~/.cache/pre-commit/)
-        if [[ $? -ne 0 ]]; then
-          echo "$patch"
-          exit 1
-        else
-          echo "patched ~/.cache/pre-commit"
-        fi
-      '
+    - nix develop --command bash -c 'patch=$(autoPatchelf ~/.cache/pre-commit/); if [[ $? -ne 0 ]]; then echo "$patch"; exit 1; else echo "patched ~/.cache/pre-commit"; fi'
     # run linter
     - nix develop --command bash -c 'make lint'
 
