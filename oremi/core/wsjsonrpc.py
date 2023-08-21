@@ -37,11 +37,9 @@ class WebsocketJsonRpcClient(WebsocketClient):
     user_agent: str,
     logger: Logger,
     on_connected: WebsocketClientOnConnect | None = None,
-    on_message: WebsocketJsonRpcClientOnMessage,
   ) -> None:
     super().__init__(uri, user_agent = user_agent, logger = logger, on_connected = on_connected, on_message = self._parse_message)
 
-    self._on_message = on_message
     self._request_callbacks: dict[int, ResponseCallback] = {}
     self._error_callbacks: dict[int, ResponseCallback] = {}
     self._request_id = 1
