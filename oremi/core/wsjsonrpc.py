@@ -18,7 +18,7 @@ from typing import Any
 from collections.abc import Callable, Coroutine
 
 from .logger import Logger
-from .wsclient import WebsocketClient, WebsocketClientEventData, WebsocketClientOnConnect, WebsocketClientOnMessage
+from .wsclient import WebsocketClient, WebsocketClientEventData, WebsocketClientOnConnect
 
 __all__ = [
   'ResponseCallback',
@@ -26,6 +26,7 @@ __all__ = [
 ]
 
 ResponseCallback = Callable[[Any], Coroutine[None, None, None]]
+WebsocketJsonRpcClientOnMessage = Callable[[dict], Coroutine[None, None, None]]
 
 
 class WebsocketJsonRpcClient(WebsocketClient):
@@ -36,7 +37,7 @@ class WebsocketJsonRpcClient(WebsocketClient):
     user_agent: str,
     logger: Logger,
     on_connected: WebsocketClientOnConnect | None = None,
-    on_message: WebsocketClientOnMessage,
+    on_message: WebsocketJsonRpcClientOnMessage,
   ) -> None:
     super().__init__(uri, user_agent = user_agent, logger = logger, on_connected = on_connected, on_message = self._parse_message)
 
