@@ -15,6 +15,7 @@
 
 import asyncio
 import json
+import logging
 from typing import Generic, Literal
 from collections.abc import Callable, Coroutine
 
@@ -24,7 +25,6 @@ import websockets.typing
 from websockets.client import connect
 
 from .event import EventData, EventType
-from .logger import Logger
 
 __all__ = [
   'WebsocketClient',
@@ -47,7 +47,7 @@ class WebsocketClient(Generic[EventType, EventData]):
     uri: str,
     *,
     user_agent: str,
-    logger: Logger,
+    logger: logging.Logger,
     on_connected: WebsocketClientOnConnect | None = None,
     on_message: WebsocketClientOnMessage,
   ) -> None:

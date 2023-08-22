@@ -15,6 +15,7 @@
 
 import socket
 
+
 def get_ipv4_address() -> str | None:
   # Get the hostname of the local machine
   hostname = socket.gethostname()

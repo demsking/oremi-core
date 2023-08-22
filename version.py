@@ -13,17 +13,11 @@
 # limitations under the License.
 # ==============================================================================
 
-import toml
+import importlib.metadata
 
-with open('pyproject.toml', encoding = 'utf-8') as file:
-  package = toml.load(file)['tool']['poetry']
-  __version__ = package['version']
-  del package
-  del toml
+__package_name__ = 'oremi-discovery'
+__version__ = importlib.metadata.version(__package_name__)
 
-__all__ = [
-  '__version__',
-]
 
 if __name__ == '__main__':
   print(__version__)

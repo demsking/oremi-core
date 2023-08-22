@@ -14,10 +14,10 @@
 # ==============================================================================
 
 import json
+import logging
 from typing import Any
 from collections.abc import Callable, Coroutine
 
-from .logger import Logger
 from .wsclient import WebsocketClient, WebsocketClientEventData, WebsocketClientOnConnect
 
 __all__ = [
@@ -35,7 +35,7 @@ class WebsocketJsonRpcClient(WebsocketClient):
     uri: str,
     *,
     user_agent: str,
-    logger: Logger,
+    logger: logging.Logger,
     on_connected: WebsocketClientOnConnect | None = None,
   ) -> None:
     super().__init__(uri, user_agent = user_agent, logger = logger, on_connected = on_connected, on_message = self._parse_message)

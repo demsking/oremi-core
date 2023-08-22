@@ -1,6 +1,6 @@
+import logging
 import websockets.typing
 from .event import EventData, EventType
-from .logger import Logger
 from _typeshed import Incomplete
 from collections.abc import Callable, Coroutine
 from typing import Generic
@@ -13,9 +13,9 @@ WebsocketClientOnMessage = Callable[[WebsocketClientEventData], Coroutine[None, 
 class WebsocketClient(Generic[EventType, EventData]):
     ws: websockets.legacy.client.WebSocketClientProtocol
     user_agent: Incomplete
-    logger: Incomplete
+    logger: logging.Logger
     connected: bool
-    def __init__(self, uri: str, *, user_agent: str, logger: Logger, on_connected: WebsocketClientOnConnect | None = ..., on_message: WebsocketClientOnMessage) -> None: ...
+    def __init__(self, uri: str, *, user_agent: str, logger: logging.Logger, on_connected: WebsocketClientOnConnect | None = ..., on_message: WebsocketClientOnMessage) -> None: ...
     async def connect(self) -> None: ...
     async def send_data(self, data: websockets.typing.Data) -> None: ...
     async def send_json(self, message: dict | list) -> None: ...

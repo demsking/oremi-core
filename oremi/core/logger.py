@@ -28,6 +28,7 @@ __all__ = [
 
 _format = '%(asctime)s - %(name)s - %(levelname)-s - %(message)s'
 
+
 class OremiFormatter(logging.Formatter):
   def __init__(
     self,
