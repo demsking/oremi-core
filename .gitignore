@@ -2,12 +2,11 @@ venv/
 cache_dir/
 config/feature.*
 model-last/
-volume/
 notify/target/
 .nix-node/
 htmlcov/
 dist/
-lab/
+build/
 config/home-assistant/
 __pycache__/
 .ruff_cache/

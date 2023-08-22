@@ -1,4 +1,6 @@
-.PHONY: all clean test install stubs
+APP_VERSION := $(shell python version.py)
+
+.PHONY: all clean test install stubs package
 
 # Start the development environment using tmuxinator
 env:
@@ -40,6 +42,12 @@ clean:
 
 stubs:
 	stubgen -v --package oremi -o stubs
+
+build/packages/oremi-core-$(APP_VERSION): package.nix
+	mkdir -p $(shell dirname $@)
+	nix-build -v -A oremi-core --out-link $@ $<
+
+package: build/packages/oremi-core-$(APP_VERSION)
 
 # Build a distribution of the project using poetry and twine
 dist: clean stubs

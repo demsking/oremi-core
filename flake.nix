@@ -9,6 +9,7 @@
       let
         envDir = "$(pwd)/venv";
         pkgs = import nixpkgs { inherit system; };
+        pylint-pydantic = with import <nixpkgs> {}; pkgs.python3Packages.callPackage "./packages/pylint-pydantic" {};
       in
       {
         devShell =
@@ -29,6 +30,8 @@
               python310Packages.twine
               python310Packages.setuptools
               python310Packages.virtualenv
+              python310Packages.pylint
+#               pylint-pydantic
 
               # pre-commit
               pre-commit
