@@ -54,7 +54,7 @@ class Logger(logging.Logger):
   global_level = logging.DEBUG
 
   def __init__(self, name: str, *, level: int | None = None, filename: str | None = None) -> None:
-    super().__init__(name, level = level if isinstance(level, int) else Logger.global_level)
+    super().__init__(name, level = level or Logger.global_level)
 
     self.log_filename = filename
 
@@ -62,7 +62,6 @@ class Logger(logging.Logger):
     console_handler = logging.StreamHandler()
 
     console_handler.setFormatter(formatter)
-    self.setLevel(Logger.global_level)
     self.addHandler(console_handler)
 
     if filename:

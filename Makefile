@@ -50,13 +50,14 @@ build/packages/oremi-core-$(APP_VERSION): package.nix
 package: build/packages/oremi-core-$(APP_VERSION)
 
 # Build a distribution of the project using poetry and twine
-dist: clean stubs
+dist: clean
 	poetry build
 	twine check dist/*
 
 # Publish a distribution of the project to TestPyPI using twine
 publish: dist
-	twine upload -r testpypi dist/*
+	twine upload --verbose -r testpypi dist/*
 
 install:
 	poetry install
+	pip install pylint pylint-pydantic
