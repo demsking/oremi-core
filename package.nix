@@ -8,6 +8,7 @@ with import <nixpkgs> {};
     overrides = pkgs.poetry2nix.defaultPoetryOverrides.extend(self: super: {
       pydantic = pkgs.python3Packages.callPackage ./packages/pydantic {};
       pylint-pydantic = pkgs.python3Packages.callPackage ./packages/pylint-pydantic {};
+      typing-extensions = super.typing-extensions;
       unqlite = super.unqlite.overridePythonAttrs (
         old: {
           buildInputs = (old.buildInputs or [ ]) ++ [ super.setuptools ];
