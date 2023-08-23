@@ -1,3 +1,0 @@
-from typing import Any
-
-def flatten(items: list[Any]) -> list[Any]: ...

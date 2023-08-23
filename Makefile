@@ -40,9 +40,6 @@ update:
 clean:
 	rm -rf dist/
 
-stubs:
-	stubgen -v --package oremi -o stubs
-
 build/packages/oremi-core-$(APP_VERSION): package.nix
 	mkdir -p $(shell dirname $@)
 	nix-build -v -A oremi-core --out-link $@ $<
