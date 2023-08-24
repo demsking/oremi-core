@@ -15,8 +15,9 @@
 
 import json
 import logging
-from typing import Any
 from collections.abc import Callable, Coroutine
+from ssl import SSLContext
+from typing import Any
 
 from .wsclient import WebsocketClient, WebsocketClientEventData, WebsocketClientOnConnect
 
@@ -37,7 +38,7 @@ class WebsocketJsonRpcClient(WebsocketClient):
     user_agent: str,
     logger: logging.Logger,
     on_connected: WebsocketClientOnConnect | None = None,
-    cert_file: str | None = None,
+    ssl: SSLContext | None = None,
   ) -> None:
     super().__init__(
       uri,
@@ -45,7 +46,7 @@ class WebsocketJsonRpcClient(WebsocketClient):
       logger = logger,
       on_connected = on_connected,
       on_message = self._parse_message,
-      cert_file = cert_file,
+      ssl = ssl,
     )
 
     self._request_callbacks: dict[int, ResponseCallback] = {}

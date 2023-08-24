@@ -16,8 +16,9 @@
 import asyncio
 import json
 import logging
-from typing import Generic, Literal
 from collections.abc import Callable, Coroutine
+from ssl import SSLContext
+from typing import Generic, Literal
 
 import websockets.exceptions
 import websockets.legacy.client
@@ -50,7 +51,7 @@ class WebsocketClient(Generic[EventType, EventData]):
     logger: logging.Logger,
     on_connected: WebsocketClientOnConnect | None = None,
     on_message: WebsocketClientOnMessage,
-    cert_file: str | None = None,
+    ssl: SSLContext | None = None,
   ) -> None:
     self._uri = uri
     self.user_agent = user_agent
@@ -58,13 +59,7 @@ class WebsocketClient(Generic[EventType, EventData]):
     self.connected = False
     self._on_connected = on_connected
     self._on_message = on_message
-    self.ssl_context = None
-
-    if cert_file:
-      import ssl
-      self.ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-      self.ssl_context.load_cert_chain(cert_file)
-      logger.info(f'Using certificat file "{cert_file}"')
+    self.ssl_context = ssl
 
   async def connect(self) -> None:
     self.logger.info(f'Connecting to {self._uri}')

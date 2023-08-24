@@ -29,6 +29,7 @@
               python310Packages.twine
               python310Packages.setuptools
               python310Packages.virtualenv
+              python310Packages.toml
 
               # pre-commit
               pre-commit
