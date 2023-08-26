@@ -1,6 +1,6 @@
 APP_VERSION := $(shell python version.py)
 
-.PHONY: all clean test install stubs package
+.PHONY: all clean test install package build/packages/oremi-core-$(APP_VERSION)
 
 # Start the development environment using tmuxinator
 env:
@@ -40,9 +40,9 @@ update:
 clean:
 	rm -rf dist/
 
-build/packages/oremi-core-$(APP_VERSION): package.nix
+build/packages/oremi-core-$(APP_VERSION):
 	mkdir -p $(shell dirname $@)
-	nix-build -v -A oremi-core --out-link $@ $<
+	nix build -v . --out-link $@
 
 package: build/packages/oremi-core-$(APP_VERSION)
 
@@ -57,4 +57,3 @@ publish: dist
 
 install:
 	poetry install
-	pip install pylint pylint-pydantic
