@@ -19,11 +19,6 @@
             preferWheels = false;
             overrides = pkgs.poetry2nix.defaultPoetryOverrides.extend(self: super: {
               typing-extensions = super.typing-extensions;
-              unqlite = super.unqlite.overridePythonAttrs (
-                old: {
-                  buildInputs = (old.buildInputs or [ ]) ++ [ super.setuptools ];
-                }
-              );
             });
           };
         };
