@@ -14,9 +14,10 @@
 # ==============================================================================
 
 import socket
+from typing import Union
 
 
-def get_ipv4_address() -> str | None:
+def get_ipv4_address() -> Union[str, None]:
   # Get the hostname of the local machine
   hostname = socket.gethostname()
 

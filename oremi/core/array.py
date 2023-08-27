@@ -17,10 +17,10 @@ __all__ = [
   'flatten',
 ]
 
-from typing import Any
+from typing import Any, List
 
 
-def flatten(items: list[Any]) -> list[Any]:
+def flatten(items: List[Any]) -> List[Any]:
   """
   Flattens a nested list of items into a single list.
 

@@ -14,7 +14,7 @@
 # ==============================================================================
 
 import asyncio
-from collections.abc import Callable, Coroutine
+from typing import Callable, Coroutine, Union
 
 __all__ = [
   'Timer',
@@ -36,7 +36,7 @@ class Timer:
       fn (Callable[[], Coroutine]): The function to call when the timer is up.
     """
     self._fn = fn
-    self._task: asyncio.TimerHandle | None = None
+    self._task: Union[asyncio.TimerHandle, None] = None
     self.delay = delay
 
   def is_alive(self) -> bool:

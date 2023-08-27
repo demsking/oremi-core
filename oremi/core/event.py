@@ -14,8 +14,7 @@
 # ==============================================================================
 
 import asyncio
-from typing import Generic, TypeVar
-from collections.abc import Callable, Coroutine
+from typing import Callable, Coroutine, Dict, Generic, List, TypeVar
 
 EventType = TypeVar('EventType')
 EventData = TypeVar('EventData')
@@ -30,7 +29,7 @@ class EventManager(Generic[EventType, EventData]):
     """
     Initialize the event manager.
     """
-    self._subscribers: dict[EventType, list[Callable[[EventData], Coroutine]]] = {}
+    self._subscribers: Dict[EventType, List[Callable[[EventData], Coroutine]]] = {}
 
   def subscribe(self, event_type: EventType, listener: Callable[[EventData], Coroutine[None, None, None]]) -> None:
     """

@@ -15,9 +15,8 @@
 
 import json
 import logging
-from collections.abc import Callable, Coroutine
 from ssl import SSLContext
-from typing import Any
+from typing import Any, Callable, Coroutine, Dict, Union
 
 from .wsclient import WebsocketClient, WebsocketClientEventData, WebsocketClientOnConnect
 
@@ -37,8 +36,8 @@ class WebsocketJsonRpcClient(WebsocketClient):
     *,
     user_agent: str,
     logger: logging.Logger,
-    on_connected: WebsocketClientOnConnect | None = None,
-    ssl: SSLContext | None = None,
+    on_connected: Union[WebsocketClientOnConnect, None] = None,
+    ssl: Union[SSLContext, None] = None,
   ) -> None:
     super().__init__(
       uri,
@@ -49,8 +48,8 @@ class WebsocketJsonRpcClient(WebsocketClient):
       ssl = ssl,
     )
 
-    self._request_callbacks: dict[int, ResponseCallback] = {}
-    self._error_callbacks: dict[int, ResponseCallback] = {}
+    self._request_callbacks: Dict[int, ResponseCallback] = {}
+    self._error_callbacks: Dict[int, ResponseCallback] = {}
     self._request_id = 1
 
   async def _parse_message(self, message: WebsocketClientEventData) -> None:
@@ -75,10 +74,10 @@ class WebsocketJsonRpcClient(WebsocketClient):
   async def send_request(
     self,
     method: str,
-    params: list | dict | None = None,
+    params: Union[list, dict, None] = None,
     *,
-    on_response: ResponseCallback | None = None,
-    on_error: ResponseCallback | None = None,
+    on_response: Union[ResponseCallback, None] = None,
+    on_error: Union[ResponseCallback, None] = None,
   ) -> None:
     self.logger.debug(f'{self._uri}: Calling JSON-RPC method "{method}" ({self._request_id}) with params {params}')
     data = {

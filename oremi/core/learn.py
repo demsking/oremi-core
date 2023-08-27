@@ -15,7 +15,7 @@
 
 import csv
 import random
-from typing import TypedDict
+from typing import Dict, List, Tuple, TypedDict
 
 __all__ = [
   'Data',
@@ -41,7 +41,7 @@ def split_data(
   shuffle: bool = True,
   header_label: str = 'label',
   header_text: str = 'text'
-) -> tuple[list[str], list[Data], list[Data], dict[str, list[Data]]]:
+) -> Tuple[List[str], List[Data], List[Data], Dict[str, List[Data]]]:
   """Split data from a CSV file into train and validation sets.
 
   This function reads data from a CSV file with the specified filename and splits it into train and validation sets.
@@ -60,9 +60,9 @@ def split_data(
     validation_data (list): A list of tuples containing the validation data, where each tuple has two elements: the label and the text.
   """
 
-  labels: list[str] = []
-  train_data: list[Data] = []
-  validation_data: list[Data] = []
+  labels: List[str] = []
+  train_data: List[Data] = []
+  validation_data: List[Data] = []
 
   with open(cvs_filename, encoding = 'utf-8') as file:
     reader = csv.reader(file, delimiter=delimiter)
@@ -70,9 +70,9 @@ def split_data(
     index_name = headers.index(header_label)
     index_text = headers.index(header_text)
 
-    data_by_label: dict[str, list[Data]] = {}
-    index_by_label: dict[str, int] = {}
-    labels_items: list[CodeName] = []
+    data_by_label: Dict[str, List[Data]] = {}
+    index_by_label: Dict[str, int] = {}
+    labels_items: List[CodeName] = []
     index = 0
 
     for index, line in enumerate(reader):

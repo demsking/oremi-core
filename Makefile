@@ -56,4 +56,5 @@ publish: dist
 	twine upload --verbose -r testpypi dist/*
 
 install:
-	poetry install
+	pip install twine pylint pytest-mock pytest pytest-cov pluggy pytest-asyncio \
+	  && poetry install

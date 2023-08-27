@@ -16,9 +16,8 @@
 import asyncio
 import json
 import logging
-from collections.abc import Callable, Coroutine
 from ssl import SSLContext
-from typing import Generic, Literal
+from typing import Callable, Coroutine, Generic, Literal, Union
 
 import websockets.exceptions
 import websockets.legacy.client
@@ -49,9 +48,9 @@ class WebsocketClient(Generic[EventType, EventData]):
     *,
     user_agent: str,
     logger: logging.Logger,
-    on_connected: WebsocketClientOnConnect | None = None,
+    on_connected: Union[WebsocketClientOnConnect, None] = None,
     on_message: WebsocketClientOnMessage,
-    ssl: SSLContext | None = None,
+    ssl: Union[SSLContext, None] = None,
   ) -> None:
     self._uri = uri
     self.user_agent = user_agent
@@ -86,7 +85,7 @@ class WebsocketClient(Generic[EventType, EventData]):
   async def send_data(self, data: websockets.typing.Data) -> None:
     await self.ws.send(data)
 
-  async def send_json(self, message: dict | list) -> None:
+  async def send_json(self, message: Union[dict, list]) -> None:
     payload = json.dumps(message)
     await self.ws.send(payload)
 

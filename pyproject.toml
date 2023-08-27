@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "oremi-core"
-version = "1.0.0.dev16"
+version = "1.0.0.dev17"
 description = "The cornerstone of the Oremi ecosystem"
 keywords = ["oremi", "core", "utils"]
 authors = ["Sébastien Demanou <demsking@gmail.com>"]
@@ -20,7 +20,7 @@ classifiers = [
   "Topic :: Software Development :: Localization",
   "License :: OSI Approved :: Apache Software License",
   "Operating System :: POSIX :: Linux",
-  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.8",
 ]
 
 packages = [
@@ -35,7 +35,7 @@ include = []
 "Tracker" = "https://gitlab.com/demsking/oremi-core/-/issues"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.8"
 coloredlogs = "^15.0.1"
 websockets = "^11.0.3"
 python-dateutil = "^2.8.2"
@@ -46,7 +46,7 @@ python_functions = "test_"
 
 [tool.ruff]
 fix = true
-target-version = "py310"
+target-version = "py38"
 
 # Only enable rules that have safe autofixes;
 # only enable rules that are relevant to stubs
