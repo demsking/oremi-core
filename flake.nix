@@ -27,32 +27,50 @@
           PYTHONPATH = ".:${envDir}/${pkgs.python3.sitePackages}:$PYTHONPATH";
           buildInputs = [
             # tmux
-            tmuxinator
+            git
             tmux
             gitmux
-            git
+            tmuxinator
 
             # python
+            dart
             poetry
             python38
             python38Packages.pip
             python38Packages.wheel
             python38Packages.virtualenv
+            python38Packages.websockets
             python38Packages.toml
 
+            # tests
+            nodePackages.nodemon
+
+            # certificates
+            openssl
+
             # pre-commit
-            pre-commit
             ruff
-            check-jsonschema
-            gnumake
-            checkmake
-            stdenv.cc.cc.libgcc
-            autoPatchelfHook
             which
             nodejs
+            hadolint
+            check-jsonschema
+            gnutar
+            gnumake
+            bandit
+            skjold
+            shellcheck
+            prospector
+            pre-commit
+            editorconfig-checker
+            python38Packages.doc8
+            python38Packages.pyroma
             python38Packages.pre-commit-hooks
+            python38Packages.reorder-python-imports
           ];
           shellHook = ''
+            # Disable Dart analytics
+            dart --disable-analytics > /dev/null
+
             # Python
             virtualenv `basename ${envDir}`
             VIRTUAL_ENV_DISABLE_PROMPT=true source ${envDir}/bin/activate

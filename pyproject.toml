@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "oremi-core"
-version = "1.0.0.dev17"
+version = "1.0.0.dev18"
 description = "The cornerstone of the Oremi ecosystem"
 keywords = ["oremi", "core", "utils"]
 authors = ["Sébastien Demanou <demsking@gmail.com>"]
@@ -43,6 +43,13 @@ python-dateutil = "^2.8.2"
 [tool.pytest.ini_options]
 # Function starting with the following pattern are considered for test cases.
 python_functions = "test_"
+
+[tool.skjold]
+sources = ["pyup", "gemnasium", "osv", "pypa"]
+report_only = false # Exit with non-zero exit code on findings.
+
+[tool.bandit]
+exclude_dirs = ["tests"]
 
 [tool.ruff]
 fix = true

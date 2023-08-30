@@ -1,8 +1,9 @@
-import logging
 import logging.handlers
-from unittest.mock import call, patch
+from unittest.mock import call
+from unittest.mock import patch
 
-from oremi.core.logger import Logger, OremiFormatter
+from oremi.core.logger import Logger
+from oremi.core.logger import OremiFormatter
 
 
 def test_oremi_formatter_formatting():

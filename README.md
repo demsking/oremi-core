@@ -17,7 +17,7 @@ applications.
 ## Install
 
 ```sh
-pip install -i https://test.pypi.org/simple/ oremi-core
+pip install oremi-core
 ```
 
 ## Contribute

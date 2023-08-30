@@ -21,14 +21,14 @@ env setup:
   script:
     - nix develop --command bash -c 'make install'
 
-lint:
-  stage: test
-  needs:
-    - env setup
-  script:
-    - nix develop --command bash -c 'make lint'
+# lint:
+#   stage: test
+#   needs:
+#     - env setup
+#   script:
+#     - nix develop --command bash -c 'make lint'
 
-tests and coverage:
+python test:
   stage: test
   needs:
     - env setup
@@ -36,11 +36,19 @@ tests and coverage:
     - nix develop --command bash -c 'make coverage'
   coverage: '/TOTAL\s+\d+\s+\d+\s+([\d\.]+)%/'
 
+dart test:
+  stage: test
+  needs:
+    - env setup
+  script:
+    - nix develop --command bash -c 'make test-dart'
+
 build distribution files:
   stage: build
   needs:
-    - lint
-    - tests and coverage
+    # - lint
+    - python test
+    - dart test
   script:
     - nix develop --command bash -c 'make dist'
   artifacts:

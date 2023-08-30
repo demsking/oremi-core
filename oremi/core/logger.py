@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
 import logging
-import logging.handlers as handlers
 import traceback
-from typing import Any, Union
+from logging import handlers
+from typing import Any
+from typing import Union
 
 import coloredlogs
 
@@ -43,7 +43,7 @@ class OremiFormatter(logging.Formatter):
 
   def formatException(self, ei: Any) -> str:
     tb = ''.join(traceback.format_exception(*ei))
-    last_line = tb.rstrip().split('\n')[-1]
+    last_line = tb.rstrip().rsplit('\n', maxsplit = 1000)[-1]
     file_name, line_number, function_name, _ = traceback.extract_tb(ei[2])[-1]
     return f'{last_line} (File: {file_name}, Function: {function_name}, Line: {line_number})'
 

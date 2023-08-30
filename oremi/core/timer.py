@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
 import asyncio
-from typing import Callable, Coroutine, Union
+from typing import Callable
+from typing import Coroutine
+from typing import Union
 
 __all__ = [
   'Timer',

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
 import toml
 
 with open('pyproject.toml', encoding = 'utf-8') as file:

@@ -12,13 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
 import json
 import logging
 from ssl import SSLContext
-from typing import Any, Callable, Coroutine, Dict, Union
+from typing import Any
+from typing import Callable
+from typing import Coroutine
+from typing import Dict
+from typing import Union
 
-from .wsclient import WebsocketClient, WebsocketClientEventData, WebsocketClientOnConnect
+from .wsclient import WebsocketClient
+from .wsclient import WebsocketClientEventData
 
 __all__ = [
   'ResponseCallback',
@@ -29,6 +33,10 @@ ResponseCallback = Callable[[Any], Coroutine[None, None, None]]
 WebsocketJsonRpcClientOnMessage = Callable[[dict], Coroutine[None, None, None]]
 
 
+class InvalidMessageFormatError(TypeError):
+  pass
+
+
 class WebsocketJsonRpcClient(WebsocketClient):
   def __init__(
     self,
@@ -36,15 +44,12 @@ class WebsocketJsonRpcClient(WebsocketClient):
     *,
     user_agent: str,
     logger: logging.Logger,
-    on_connected: Union[WebsocketClientOnConnect, None] = None,
     ssl: Union[SSLContext, None] = None,
   ) -> None:
     super().__init__(
       uri,
       user_agent = user_agent,
       logger = logger,
-      on_connected = on_connected,
-      on_message = self._parse_message,
       ssl = ssl,
     )
 
@@ -52,24 +57,23 @@ class WebsocketJsonRpcClient(WebsocketClient):
     self._error_callbacks: Dict[int, ResponseCallback] = {}
     self._request_id = 1
 
-  async def _parse_message(self, message: WebsocketClientEventData) -> None:
+  async def on_message(self, message: WebsocketClientEventData) -> None:
+    self.logger.debug(f'< {message}')
+
     data = json.loads(message)
 
     if 'id' in data:
       request_id = data['id']
       if 'error' in data:
-        self.logger.error(f'Response from {self._uri}: {message}')
         if request_id in self._error_callbacks:
           await self._error_callbacks[request_id](data['error'])
           del self._error_callbacks[request_id]
       else:
-        self.logger.debug(f'Response from {self._uri}: {message}')
         if request_id in self._request_callbacks:
           await self._request_callbacks[request_id](data['result'])
           del self._request_callbacks[request_id]
     else:
-      self.logger.debug(f'Message from {self._uri}: {message}')
-      await self._on_message(data)
+      raise InvalidMessageFormatError(f'Invalid Message: {message}')
 
   async def send_request(
     self,
@@ -79,7 +83,6 @@ class WebsocketJsonRpcClient(WebsocketClient):
     on_response: Union[ResponseCallback, None] = None,
     on_error: Union[ResponseCallback, None] = None,
   ) -> None:
-    self.logger.debug(f'{self._uri}: Calling JSON-RPC method "{method}" ({self._request_id}) with params {params}')
     data = {
       'id': self._request_id,
       'jsonrpc': '2.0',
