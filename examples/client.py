@@ -55,7 +55,7 @@ class TestWebsocketClient(WebsocketClient):
     await asyncio.sleep(2)
     await self.disconnect()
 
-  async def on_message(self, message: WebsocketClientEventData) -> None:
+  async def on_message_received(self, message: WebsocketClientEventData) -> None:
     self.logger.info(f'Receive: {message}')
 
 

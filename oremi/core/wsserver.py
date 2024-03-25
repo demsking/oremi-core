@@ -46,7 +46,7 @@ class WebsocketServer(ABC):
   ) -> None:
     self.verbose: bool = logger.level != logging.INFO
     self.kwargs = kwargs
-    self.server_header: str = Websockets.HeadersLikeOrCallable
+    self.server_header: str = server_header
     self.logger: logging.Logger = logger
     self.on_listening = on_listening
     self.ssl_context = self._create_ssl_context(cert_file = cert_file, key_file = key_file, password = password)

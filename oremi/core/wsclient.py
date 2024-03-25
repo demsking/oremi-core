@@ -54,6 +54,7 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
     self._uri: str = uri
     self.user_agent: str = user_agent
     self.logger: logging.Logger = logger
+    self._listening = True
     self._connected = False
     self.ssl_context: Union[SSLContext, None] = ssl
 
@@ -65,16 +66,19 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
     self.logger.info(f'Connected to {self._uri}')
 
   @abstractmethod
-  async def on_message(self, message: WebsocketClientEventData) -> None:
+  async def on_message_received(self, message: WebsocketClientEventData) -> None:
     pass
 
-  def on_connection_close(self, code: Union[int, None] = None, reason: Union[str, None] = None):
+  def on_connection_closed(self, code: Union[int, None] = None, reason: Union[str, None] = None):
     self.logger.info(f'Connection to {self._uri} closed with code {code}, reason "{reason}"')
+
+  def on_connection_cancelled(self):
+    self.logger.warning(f'Connection to {self._uri} cancelled')
 
   async def connect(self) -> None:
     self.logger.info(f'Connecting to {self._uri}')
     async for websocket in connect(self._uri, user_agent_header = self.user_agent, close_timeout = 0, ssl = self.ssl_context):
-      if not self._connected:
+      if not self._listening:
         break
 
       self.ws = websocket
@@ -83,11 +87,19 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
       try:
         await self.on_connect()
         async for message in websocket:
-          await self.on_message(message)
+          await self.on_message_received(message)
       except websockets.exceptions.ConnectionClosedOK as exception:
-        self.on_connection_close(exception.code, exception.reason)
+        self._listening = False
+        self._connected = False
+        self.on_connection_closed(exception.code, exception.reason)
+      except websockets.exceptions.ConnectionClosedError as exception:
+        self._listening = False
+        self._connected = False
+        self.on_connection_closed(exception.code, exception.reason)
       except asyncio.CancelledError:
-        self.logger.warning(f'Connection to {self._uri} cancelled')
+        self._listening = False
+        self._connected = False
+        self.on_connection_cancelled()
         break
 
   async def send_data(self, data: websockets.typing.Data) -> None:
@@ -99,7 +111,7 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
     await self.ws.send(payload)
 
   async def disconnect(self) -> None:
-    self._connected = False
+    self._listening = False
 
     if not self.ws.closed:
       await self.ws.close(1000, 'Client disconnect')

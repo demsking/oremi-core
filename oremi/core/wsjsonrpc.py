@@ -57,7 +57,7 @@ class WebsocketJsonRpcClient(WebsocketClient):
     self._error_callbacks: Dict[int, ResponseCallback] = {}
     self._request_id = 1
 
-  async def on_message(self, message: WebsocketClientEventData) -> None:
+  async def on_message_received(self, message: WebsocketClientEventData) -> None:
     self.logger.debug(f'< {message}')
 
     data = json.loads(message)

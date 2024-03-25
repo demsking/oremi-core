@@ -1,6 +1,6 @@
 APP_VERSION := $(shell python version.py)
 
-SSL_PATH := ~/build/ssl
+SSL_PATH := ./build/ssl
 SSL_CERT_FILE := $(SSL_PATH)/localhost.pem
 
 .PHONY: all clean test install package certificates server-wss server-ws client-dart-ws client-dart-wss test-dart-watch
@@ -115,8 +115,8 @@ coverage-html:
 	pytest --cov=oremi --cov-report=html
 
 install:
-	pip install twine pylint pytest-mock pytest pytest-cov pluggy pytest-asyncio \
-	  && poetry install
+	pip install twine pylint pytest-mock pytest pytest-cov pluggy pytest-asyncio reorder-python-imports
+	poetry install
 	dart pub -C dart/ get
 
 # Show outdated dependencies using poetry

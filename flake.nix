@@ -39,7 +39,6 @@
             python38Packages.pip
             python38Packages.wheel
             python38Packages.virtualenv
-            python38Packages.websockets
             python38Packages.toml
 
             # tests
@@ -65,7 +64,6 @@
             python38Packages.doc8
             python38Packages.pyroma
             python38Packages.pre-commit-hooks
-            python38Packages.reorder-python-imports
           ];
           shellHook = ''
             # Disable Dart analytics
