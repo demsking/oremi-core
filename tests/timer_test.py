@@ -2,7 +2,7 @@ import asyncio
 
 import pytest
 
-from oremi.core.timer import Timer
+from oremi_core.timer import Timer
 
 
 @pytest.fixture

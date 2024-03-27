@@ -17,10 +17,10 @@ import asyncio
 import json
 import logging
 
-from oremi.core.logger import Logger
-from oremi.core.wsserver import Data
-from oremi.core.wsserver import WebsocketConnection
-from oremi.core.wsserver import WebsocketServer
+from oremi_core.logger import Logger
+from oremi_core.wsserver import Data
+from oremi_core.wsserver import WebsocketConnection
+from oremi_core.wsserver import WebsocketServer
 
 
 class EchoServer(WebsocketServer):

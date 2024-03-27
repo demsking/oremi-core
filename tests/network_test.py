@@ -1,7 +1,7 @@
 import socket
 from unittest.mock import patch
 
-from oremi.core.network import get_ipv4_address
+from oremi_core.network import get_ipv4_address
 
 
 def test_get_ipv4_address():

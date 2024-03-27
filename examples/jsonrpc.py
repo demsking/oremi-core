@@ -17,8 +17,8 @@ import asyncio
 import logging
 import ssl
 
-from oremi.core.logger import Logger
-from oremi.core.wsjsonrpc import WebsocketJsonRpcClient
+from oremi_core.logger import Logger
+from oremi_core.wsjsonrpc import WebsocketJsonRpcClient
 
 
 def parse_arguments() -> argparse.Namespace:

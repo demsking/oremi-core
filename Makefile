@@ -98,21 +98,21 @@ test-python:
 test: test-dart test-python
 
 watch-test-dart:
-	nodemon -e dart -w dart -x 'make test-dart'
+	nodemon -w dart -e dart -x 'make test-dart'
 
 watch-test-python:
-	nodemon -e oremi -w dart -x 'make test-python'
+	nodemon -w oremi_core -e py -x 'make test-python'
 
 watch-test:
 	$(MAKE) -j2 watch-test-dart watch-test-python
 
 # Generate a coverage report for the codebase using pytest
 coverage:
-	pytest --cov=oremi
+	pytest --cov=oremi_core
 
 # Generate an HTML coverage report for the codebase using pytest
 coverage-html:
-	pytest --cov=oremi --cov-report=html
+	pytest --cov=oremi_core --cov-report=html
 
 install:
 	pip install twine pylint pytest-mock pytest pytest-cov pluggy pytest-asyncio reorder-python-imports

@@ -17,9 +17,9 @@ import asyncio
 import logging
 import ssl
 
-from oremi.core.logger import Logger
-from oremi.core.wsclient import WebsocketClient
-from oremi.core.wsclient import WebsocketClientEventData
+from oremi_core.logger import Logger
+from oremi_core.wsclient import WebsocketClient
+from oremi_core.wsclient import WebsocketClientEventData
 
 
 def parse_arguments() -> argparse.Namespace:
