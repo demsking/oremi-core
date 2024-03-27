@@ -58,8 +58,6 @@ class WebsocketJsonRpcClient(WebsocketClient):
     self._request_id = 1
 
   async def on_message_received(self, message: WebsocketClientEventData) -> None:
-    self.logger.debug(f'< {message}')
-
     data = json.loads(message)
 
     if 'id' in data:

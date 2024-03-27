@@ -103,7 +103,6 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
         break
 
   async def send_data(self, data: websockets.typing.Data) -> None:
-    self.logger.debug(f'> {data}')
     await self.ws.send(data)
 
   async def send_json(self, message: Union[dict, list]) -> None:
