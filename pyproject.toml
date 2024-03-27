@@ -24,7 +24,7 @@ classifiers = [
 ]
 
 packages = [
-  { include = "oremi" },
+  { include = "oremi_core" },
 ]
 
 include = []
