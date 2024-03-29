@@ -20,9 +20,10 @@ from abc import abstractmethod
 from typing import Callable
 from typing import Union
 
-import websockets.exceptions
 import websockets.legacy.server as Websockets
 import websockets.typing
+from websockets.exceptions import ConnectionClosedError
+from websockets.exceptions import ConnectionClosedOK
 
 __all__ = [
   'WebsocketServer',
@@ -66,7 +67,7 @@ class WebsocketServer(ABC):
       ssl_context.load_cert_chain(cert_file, key_file, password)
     return ssl_context
 
-  def _handle_connection_close(self, websocket: WebsocketConnection, exception: websockets.exceptions.ConnectionClosedOK):
+  def _handle_connection_close(self, websocket: WebsocketConnection, exception: ConnectionClosedOK | ConnectionClosedError): # type: ignore
     if exception.reason:
       self.logger.info(f'Connection closed {websocket.remote_address} with code {exception.code}. Reason: {exception.reason}')
     else:
@@ -76,25 +77,28 @@ class WebsocketServer(ABC):
   async def _process_request(self, websocket: WebsocketConnection, message: Data) -> None:
     pass
 
-  async def _handle_client_requests(self, websocket: WebsocketConnection) -> None:
+  async def _handle_messages(self, websocket: WebsocketConnection) -> None:
+    async for message in websocket:
+      await self._process_request(websocket, message)
+
+  async def _handle_new_connection(self, websocket: WebsocketConnection) -> None:
     self.logger.info(f'Connection from {websocket.remote_address} {websocket.request_headers["User-Agent"]}')
 
     try:
-      async for message in websocket:
-        await self._process_request(websocket, message)
+      await self._handle_messages(websocket)
     except (ValueError, TypeError) as exception:
       error_message = f'Invalid Message: {exception}'
       await websocket.close(code = 1003, reason = error_message)
       self.logger.error(error_message)
       if self.verbose:
         traceback.print_exc()
-    except websockets.exceptions.ConnectionClosedOK as exception:
+    except ConnectionClosedOK as exception:
       self._handle_connection_close(websocket, exception)
 
   async def _handler_client(self, websocket: WebsocketConnection) -> None:
     try:
-      await self._handle_client_requests(websocket)
-    except websockets.exceptions.ConnectionClosedOK as exception:
+      await self._handle_new_connection(websocket)
+    except (ConnectionClosedOK, ConnectionClosedError) as exception:
       self._handle_connection_close(websocket, exception)
     except Exception as error:
       error_message = f'Unexpected Error: {error}'
@@ -115,5 +119,4 @@ class WebsocketServer(ABC):
     ):
       if self.on_listening:
         await self.on_listening()
-      else:
-        await asyncio.Future()
+      await asyncio.Future()

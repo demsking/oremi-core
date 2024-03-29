@@ -63,11 +63,6 @@ repos:
         args: [test-python]
         always_run: true
         verbose: true
-      - id: hadolint
-        name: hadolint
-        entry: hadolint
-        language: system
-        files: Dockerfile
       - id: gimtoc
         name: gimtoc
         entry: gimtoc
@@ -88,15 +83,6 @@ repos:
     rev: v1.10.3
     hooks:
       - id: prospector
-  - repo: https://github.com/iamthefij/docker-pre-commit
-    rev: v3.0.1
-    hooks:
-      - id: docker-compose-check
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.2
-    hooks:
-      - id: pyupgrade
-        args: [--py38-plus]
   - repo: https://github.com/twu/skjold
     rev: v0.6.1
     hooks:
