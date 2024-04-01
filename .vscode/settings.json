@@ -35,12 +35,6 @@
   "python.analysis.inlayHints.variableTypes": true,
   "python.analysis.fixAll": ["source.convertImportFormat"],
   "python.testing.pytestEnabled": true,
-  "python.linting.ignorePatterns": [
-    "**/site-packages/**/*.py",
-    ".vscode/*.py",
-    ".*_test.py",
-    "stubs/**/*.py"
-  ],
   "python.testing.pytestArgs": [
     "tests"
   ],
