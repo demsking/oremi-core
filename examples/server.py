@@ -92,9 +92,7 @@ async def start() -> None:
   verbose: bool = args.verbose
   log_level = logging.DEBUG if verbose else logging.INFO
   logger = Logger.create('test-server', filename = args.log_file, level = log_level)
-
   logger.info('Starting test server')
-  logger.info(f'Log level {"DEBUG" if logger.level == logging.DEBUG else "INFO"}')
 
   server = EchoServer(
     logger = logger,

@@ -35,11 +35,11 @@
             # python
             dart
             poetry
-            python38
-            python38Packages.pip
-            python38Packages.wheel
-            python38Packages.virtualenv
-            python38Packages.toml
+            python310
+            python310Packages.pip
+            python310Packages.wheel
+            python310Packages.virtualenv
+            python310Packages.toml
 
             # tests
             nodePackages.nodemon
@@ -61,9 +61,9 @@
             prospector
             pre-commit
             editorconfig-checker
-            python38Packages.doc8
-            python38Packages.pyroma
-            python38Packages.pre-commit-hooks
+            python310Packages.doc8
+            python310Packages.pyroma
+            python310Packages.pre-commit-hooks
           ];
           shellHook = ''
             # Disable Dart analytics

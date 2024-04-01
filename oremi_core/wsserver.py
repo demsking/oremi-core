@@ -17,8 +17,7 @@ import logging
 import traceback
 from abc import ABC
 from abc import abstractmethod
-from typing import Callable
-from typing import Union
+from collections.abc import Callable
 
 import websockets.legacy.server as Websockets
 import websockets.typing
@@ -38,10 +37,10 @@ class WebsocketServer(ABC):
     self,
     *,
     server_header: str,
-    cert_file: Union[str, None] = None,
-    key_file: Union[str, None] = None,
-    password: Union[str, None] = None,
-    on_listening: Union[Callable[[], asyncio.Future], None] = None,
+    cert_file: str | None = None,
+    key_file: str | None = None,
+    password: str | None = None,
+    on_listening: Callable[[], asyncio.Future] | None = None,
     logger: logging.Logger,
     **kwargs,
   ) -> None:
@@ -52,7 +51,7 @@ class WebsocketServer(ABC):
     self.on_listening = on_listening
     self.ssl_context = self._create_ssl_context(cert_file = cert_file, key_file = key_file, password = password)
 
-  def _create_ssl_context(self, *, cert_file: Union[str, None], key_file: Union[str, None] = None, password: Union[str, None] = None):
+  def _create_ssl_context(self, *, cert_file: str | None, key_file: str | None = None, password: str | None = None):
     ssl_context = None
 
     if cert_file:
@@ -67,7 +66,7 @@ class WebsocketServer(ABC):
       ssl_context.load_cert_chain(cert_file, key_file, password)
     return ssl_context
 
-  def _handle_connection_close(self, websocket: WebsocketConnection, exception: ConnectionClosedOK | ConnectionClosedError): # type: ignore
+  def _handle_connection_close(self, websocket: WebsocketConnection, exception: ConnectionClosedOK | ConnectionClosedError) -> None: # type: ignore
     if exception.reason:
       self.logger.info(f'Connection closed {websocket.remote_address} with code {exception.code}. Reason: {exception.reason}')
     else:

@@ -72,12 +72,11 @@ async def start():
     ssl_context.load_verify_locations(args.cert_file)
 
   client = TestWebsocketJsonRpcClient(
-    uri,
     ssl = ssl_context,
     user_agent = 'sdclient/1.0.0',
     logger = logger,
   )
 
-  await client.connect()
+  await client.connect(uri)
 
 asyncio.run(start())

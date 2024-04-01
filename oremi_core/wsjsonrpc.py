@@ -14,12 +14,10 @@
 # ==============================================================================
 import json
 import logging
+from collections.abc import Callable
+from collections.abc import Coroutine
 from ssl import SSLContext
 from typing import Any
-from typing import Callable
-from typing import Coroutine
-from typing import Dict
-from typing import Union
 
 from .wsclient import WebsocketClient
 from .wsclient import WebsocketClientEventData
@@ -40,21 +38,15 @@ class InvalidMessageFormatError(TypeError):
 class WebsocketJsonRpcClient(WebsocketClient):
   def __init__(
     self,
-    uri: str,
     *,
     user_agent: str,
     logger: logging.Logger,
-    ssl: Union[SSLContext, None] = None,
+    ssl: SSLContext | None = None,
   ) -> None:
-    super().__init__(
-      uri,
-      user_agent = user_agent,
-      logger = logger,
-      ssl = ssl,
-    )
+    super().__init__(user_agent = user_agent, logger = logger, ssl = ssl)
 
-    self._request_callbacks: Dict[int, ResponseCallback] = {}
-    self._error_callbacks: Dict[int, ResponseCallback] = {}
+    self._request_callbacks: dict[int, ResponseCallback] = {}
+    self._error_callbacks: dict[int, ResponseCallback] = {}
     self._request_id = 1
 
   async def on_message_received(self, message: WebsocketClientEventData) -> None:
@@ -76,10 +68,10 @@ class WebsocketJsonRpcClient(WebsocketClient):
   async def send_request(
     self,
     method: str,
-    params: Union[list, dict, None] = None,
+    params: list | dict | None = None,
     *,
-    on_response: Union[ResponseCallback, None] = None,
-    on_error: Union[ResponseCallback, None] = None,
+    on_response: ResponseCallback | None = None,
+    on_error: ResponseCallback | None = None,
   ) -> None:
     data = {
       'id': self._request_id,
