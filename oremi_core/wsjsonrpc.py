@@ -18,6 +18,7 @@ from collections.abc import Callable
 from collections.abc import Coroutine
 from ssl import SSLContext
 from typing import Any
+from typing import Optional
 
 from .wsclient import WebsocketClient
 from .wsclient import WebsocketClientEventData
@@ -41,7 +42,7 @@ class WebsocketJsonRpcClient(WebsocketClient):
     *,
     user_agent: str,
     logger: logging.Logger,
-    ssl: SSLContext | None = None,
+    ssl: Optional[SSLContext] = None,
   ) -> None:
     super().__init__(user_agent = user_agent, logger = logger, ssl = ssl)
 
@@ -68,10 +69,10 @@ class WebsocketJsonRpcClient(WebsocketClient):
   async def send_request(
     self,
     method: str,
-    params: list | dict | None = None,
+    params: list | Optional[dict] = None,
     *,
-    on_response: ResponseCallback | None = None,
-    on_error: ResponseCallback | None = None,
+    on_response: Optional[ResponseCallback] = None,
+    on_error: Optional[ResponseCallback] = None,
   ) -> None:
     data = {
       'id': self._request_id,

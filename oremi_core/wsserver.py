@@ -18,6 +18,8 @@ import traceback
 from abc import ABC
 from abc import abstractmethod
 from collections.abc import Callable
+from collections.abc import Coroutine
+from typing import Optional
 
 import websockets.legacy.server as Websockets
 import websockets.typing
@@ -37,10 +39,11 @@ class WebsocketServer(ABC):
     self,
     *,
     server_header: str,
-    cert_file: str | None = None,
-    key_file: str | None = None,
-    password: str | None = None,
-    on_listening: Callable[[], asyncio.Future] | None = None,
+    cert_file: Optional[str] = None,
+    key_file: Optional[str] = None,
+    password: Optional[str] = None,
+    on_listening: Callable[[], Coroutine] | None = None,
+    on_shutdown: Callable[[], Coroutine] | None = None,
     logger: logging.Logger,
     **kwargs,
   ) -> None:
@@ -49,9 +52,10 @@ class WebsocketServer(ABC):
     self.server_header: str = server_header
     self.logger: logging.Logger = logger
     self.on_listening = on_listening
-    self.ssl_context = self._create_ssl_context(cert_file = cert_file, key_file = key_file, password = password)
+    self.on_shutdown = on_shutdown
+    self.ssl_context = self._create_ssl_context(cert_file=cert_file, key_file=key_file, password=password)
 
-  def _create_ssl_context(self, *, cert_file: str | None, key_file: str | None = None, password: str | None = None):
+  def _create_ssl_context(self, *, cert_file: Optional[str] = None, key_file: Optional[str] = None, password: Optional[str] = None):
     ssl_context = None
 
     if cert_file:
@@ -118,4 +122,11 @@ class WebsocketServer(ABC):
     ):
       if self.on_listening:
         await self.on_listening()
-      await asyncio.Future()
+
+      try:
+        await asyncio.Future()
+      except asyncio.exceptions.CancelledError:
+        pass
+      finally:
+        if self.on_shutdown:
+          await self.on_shutdown()

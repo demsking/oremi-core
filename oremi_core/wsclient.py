@@ -20,6 +20,7 @@ from abc import abstractmethod
 from ssl import SSLContext
 from typing import Generic
 from typing import Literal
+from typing import Optional
 
 import websockets.legacy.client
 import websockets.typing
@@ -48,13 +49,13 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
     *,
     user_agent: str,
     logger: logging.Logger,
-    ssl: SSLContext | None = None,
+    ssl: Optional[SSLContext] = None,
   ) -> None:
     self.user_agent: str = user_agent
     self.logger: logging.Logger = logger
     self._listening = True
     self._connected = False
-    self.ssl_context: SSLContext | None = ssl
+    self.ssl_context: Optional[SSLContext] = ssl
 
   @property
   def connected(self) -> bool:
@@ -67,7 +68,7 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
   async def on_message_received(self, message: WebsocketClientEventData) -> None:
     pass
 
-  def on_connection_closed(self, code: int | None = None, reason: str | None = None) -> None:
+  def on_connection_closed(self, code: Optional[int] = None, reason: Optional[str] = None) -> None:
     pass
 
   def on_connection_cancelled(self) -> None:
