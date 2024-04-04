@@ -123,9 +123,6 @@ class Event:
     immediately.  Otherwise, block until another coroutine calls
     set() to set the flag to true, then return True.
     """
-    print('1 waiting')
-    if self._value:
-      return True
     while not self._value:
       await asyncio.sleep(0.1)
     return True
