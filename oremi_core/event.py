@@ -81,3 +81,51 @@ class EventManager(Generic[EventType, EventData]):
     if event_type in self._subscribers:
       corotines = [callback(event_data) for callback in self._subscribers[event_type]]
       await asyncio.gather(*corotines)
+
+
+class Event:
+  """
+  Class implementing event objects. An event manages a flag that can be set
+  to true with the set() method and reset to false with the clear() method.
+  The wait() method blocks until the flag is true. The flag is initially
+  false.
+  """
+
+  def __init__(self):
+    self._value = False
+
+  def __repr__(self):
+    res = super().__repr__()
+    extra = 'set' if self._value else 'unset'
+    return f'<{res[1:-1]} [{extra}]>'
+
+  def is_set(self):
+    """Return True if and only if the internal flag is true."""
+    return self._value
+
+  def set(self):
+    """Set the internal flag to true. All coroutines waiting for it to
+    become true are awakened. Coroutine that call wait() once the flag is
+    true will not block at all.
+    """
+    self._value = True
+
+  def clear(self):
+    """Reset the internal flag to false. Subsequently, coroutines calling
+    wait() will block until set() is called to set the internal flag
+    to true again."""
+    self._value = False
+
+  async def wait(self):
+    """Block until the internal flag is true.
+
+    If the internal flag is true on entry, return True
+    immediately.  Otherwise, block until another coroutine calls
+    set() to set the flag to true, then return True.
+    """
+    print('1 waiting')
+    if self._value:
+      return True
+    while not self._value:
+      await asyncio.sleep(0.1)
+    return True
