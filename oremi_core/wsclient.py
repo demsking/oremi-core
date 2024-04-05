@@ -68,10 +68,10 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
   async def on_message_received(self, message: WebsocketClientEventData) -> None:
     pass
 
-  def on_connection_closed(self, code: Optional[int] = None, reason: Optional[str] = None) -> None:
+  async def on_connection_closed(self, code: Optional[int] = None, reason: Optional[str] = None) -> None:
     pass
 
-  def on_connection_cancelled(self) -> None:
+  async def on_connection_cancelled(self) -> None:
     pass
 
   async def connect(self, uri: str) -> None:
@@ -92,12 +92,12 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
         self._listening = False
         self._connected = False
         self.logger.info(f'Connection to {uri} closed with code {exception.code}, reason "{exception.reason}"')
-        self.on_connection_closed(exception.code, exception.reason)
+        await self.on_connection_closed(exception.code, exception.reason)
       except asyncio.CancelledError:
         self._listening = False
         self._connected = False
         self.logger.warning(f'Connection to {uri} cancelled')
-        self.on_connection_cancelled()
+        await self.on_connection_cancelled()
         break
 
   async def send_data(self, data: websockets.typing.Data) -> None:

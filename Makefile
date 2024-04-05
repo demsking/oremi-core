@@ -138,10 +138,8 @@ build/packages/oremi-core-$(APP_VERSION):
 	mkdir -p $(shell dirname $@)
 	nix build -v . --out-link $@
 
-package: build/packages/oremi-core-$(APP_VERSION)
-
 # Build a distribution of the project using poetry and twine
-dist: clean
+package: clean
 	poetry build
 	twine check dist/*
 
@@ -150,3 +148,9 @@ publish-pypi: dist
 
 publish-dart:
 	dart pub -C dart/ publish
+
+publish: package
+	git commit pyproject.toml -m 'Release $(APP_VERSION)'
+	git tag v$(APP_VERSION)
+	$(MAKE) publish-pypi
+	git push --tags origin main
