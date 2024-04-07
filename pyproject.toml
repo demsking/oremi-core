@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "oremi-core"
-version = "1.0.0.dev27"
+version = "1.0.0.b1"
 description = "The cornerstone of the Oremi ecosystem"
 keywords = ["oremi", "core", "utils"]
 authors = ["Sébastien Demanou <demsking@gmail.com>"]
