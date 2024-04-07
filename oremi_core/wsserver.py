@@ -70,7 +70,7 @@ class WebsocketServer(ABC):
       ssl_context.load_cert_chain(cert_file, key_file, password)
     return ssl_context
 
-  def _handle_connection_close(self, websocket: WebsocketConnection, exception: ConnectionClosedOK | ConnectionClosedError) -> None: # type: ignore
+  def _handle_connection_close(self, websocket: WebsocketConnection, exception: ConnectionClosedOK | ConnectionClosedError) -> None:  # type: ignore
     if exception.reason:
       self.logger.info(f'Connection closed {websocket.remote_address} with code {exception.code}. Reason: {exception.reason}')
     else:
@@ -91,7 +91,7 @@ class WebsocketServer(ABC):
       await self._handle_messages(websocket)
     except (ValueError, TypeError) as exception:
       error_message = f'Invalid Message: {exception}'
-      await websocket.close(code = 1003, reason = error_message)
+      await websocket.close(code=1003, reason=error_message)
       self.logger.error(error_message)
       if self.verbose:
         traceback.print_exc()
@@ -106,18 +106,30 @@ class WebsocketServer(ABC):
     except Exception as error:
       error_message = f'Unexpected Error: {error}'
       self.logger.error(error_message)
-      await websocket.close(code = 4000, reason = error_message)
+      await websocket.close(code=4000, reason=error_message)
       if self.verbose:
         traceback.print_exc()
 
-  async def listen(self, host: str, port: int) -> None:
+  async def listen(
+    self,
+    host: str,
+    port: int,
+    open_timeout: Optional[float] = 10,
+    ping_interval: Optional[float] = 20,
+    ping_timeout: Optional[float] = 20,
+    close_timeout: Optional[float] = None,
+  ) -> None:
     async with Websockets.serve(
       self._handler_client,
       host,
       port,
-      ssl = self.ssl_context,
-      server_header = self.server_header,
-      logger = self.logger,
+      ssl=self.ssl_context,
+      server_header=self.server_header,
+      logger=self.logger,
+      open_timeout=open_timeout,
+      ping_interval=ping_interval,
+      ping_timeout=ping_timeout,
+      close_timeout=close_timeout,
       **self.kwargs,
     ):
       if self.on_listening:
