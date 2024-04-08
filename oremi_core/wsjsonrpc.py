@@ -18,8 +18,11 @@ from collections.abc import Callable
 from collections.abc import Coroutine
 from ssl import SSLContext
 from typing import Any
+from typing import Generic
 from typing import Optional
+from typing import TypeVar
 
+from .event import EventManager
 from .wsclient import WebsocketClient
 from .wsclient import WebsocketClientEventData
 
@@ -31,12 +34,11 @@ __all__ = [
 ResponseCallback = Callable[[Any], Coroutine[None, None, None]]
 WebsocketJsonRpcClientOnMessage = Callable[[dict], Coroutine[None, None, None]]
 
+NotificationType = TypeVar('NotificationType')
+NotificationData = TypeVar('NotificationData')
 
-class InvalidMessageFormatError(TypeError):
-  pass
 
-
-class WebsocketJsonRpcClient(WebsocketClient):
+class WebsocketJsonRpcClient(WebsocketClient, Generic[NotificationType, NotificationData]):
   def __init__(
     self,
     *,
@@ -44,27 +46,39 @@ class WebsocketJsonRpcClient(WebsocketClient):
     logger: logging.Logger,
     ssl: Optional[SSLContext] = None,
   ) -> None:
-    super().__init__(user_agent = user_agent, logger = logger, ssl = ssl)
+    super().__init__(user_agent=user_agent, logger=logger, ssl=ssl)
 
     self._request_callbacks: dict[int, ResponseCallback] = {}
     self._error_callbacks: dict[int, ResponseCallback] = {}
     self._request_id = 1
+    self._event_manager = EventManager[NotificationType, NotificationData]()
+
+  @property
+  def event_manager(self):
+    return self._event_manager
 
   async def on_message_received(self, message: WebsocketClientEventData) -> None:
     data = json.loads(message)
 
     if 'id' in data:
-      request_id = data['id']
-      if 'error' in data:
-        if request_id in self._error_callbacks:
-          await self._error_callbacks[request_id](data['error'])
-          del self._error_callbacks[request_id]
-      else:
-        if request_id in self._request_callbacks:
-          await self._request_callbacks[request_id](data['result'])
-          del self._request_callbacks[request_id]
+      await self.handle_message_dict(data)
     else:
-      raise InvalidMessageFormatError(f'Invalid Message: {message}')
+      await self.handle_message_notification(data)
+
+  async def handle_message_dict(self, data: dict) -> None:
+    request_id = data['id']
+
+    if 'error' in data:
+      if request_id in self._error_callbacks:
+        await self._error_callbacks[request_id](data['error'])
+        del self._error_callbacks[request_id]
+    else:
+      if request_id in self._request_callbacks:
+        await self._request_callbacks[request_id](data['result'])
+        del self._request_callbacks[request_id]
+
+  async def handle_message_notification(self, data: dict) -> None:
+    await self._event_manager.trigger(data['method'], data['params'])
 
   async def send_request(
     self,
