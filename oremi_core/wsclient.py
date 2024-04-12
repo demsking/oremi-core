@@ -90,6 +90,7 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
       interval (int): The interval between reconnect attempts.
     """
     self.logger.info(f'Connecting to {uri}')
+    self._listening = True
     async for websocket in connect(uri, user_agent_header=self.user_agent, close_timeout=0, ssl=self._ssl_context):
       if not self._listening:
         break
