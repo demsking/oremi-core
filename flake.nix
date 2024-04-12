@@ -24,6 +24,7 @@
         };
         devShell = with pkgs; mkShell {
           EDITOR = "vim";
+          SKIP = "insert-license";
           PYTHONPATH = ".:${envDir}/${pkgs.python3.sitePackages}:$PYTHONPATH";
           buildInputs = [
             # tmux
