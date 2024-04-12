@@ -115,7 +115,7 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
         self._available.clear()
         self.logger.error(f'Connection to {uri} closed with error code {exception.code}, reason "{exception.reason}"')
         await self.on_connection_closed(exception.code, exception.reason)
-        if auto_reconnect:
+        if self._listening and auto_reconnect:
           self.logger.warning(f'Reconnecting to {uri} in {interval} seconds...')
           await asyncio.sleep(interval)
           continue
@@ -138,7 +138,7 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
   async def disconnect(self) -> None:
     self._listening = False
 
-    if not self.ws.closed:
+    if self.ws and not self.ws.closed:
       await self.ws.close(1000, 'Client disconnect')
 
     self._connected = False
