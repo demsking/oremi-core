@@ -138,7 +138,7 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
   async def disconnect(self) -> None:
     self._listening = False
 
-    if self.ws and not self.ws.closed:
+    if hasattr(self, 'ws') and not self.ws.closed:
       await self.ws.close(1000, 'Client disconnect')
 
     self._connected = False
