@@ -59,7 +59,7 @@ exclude_dirs = ["tests"]
 
 [tool.ruff]
 fix = true
-target-version = "py38"
+target-version = "py310"
 
 # Only enable rules that have safe autofixes;
 # only enable rules that are relevant to stubs
