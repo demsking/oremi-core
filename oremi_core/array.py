@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+import random
+from typing import Any
 
 __all__ = [
   'flatten',
+  'pick_item',
 ]
 
-from typing import Any, List
 
-
-def flatten(items: List[Any]) -> List[Any]:
+def flatten(items: list[Any]) -> list[Any]:
   """
   Flattens a nested list of items into a single list.
 
@@ -39,3 +40,16 @@ def flatten(items: List[Any]) -> List[Any]:
       flattened.append(item)
 
   return flattened
+
+
+def pick_item(items: list[Any]) -> Any:
+  """
+  Pick a random item from a list of items.
+
+  Args:
+    items (list[Any]): A list of items.
+
+  Returns:
+    Any: A random item.
+  """
+  return random.sample(items, 1)[0]
