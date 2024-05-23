@@ -6,7 +6,7 @@ SSL_CERT_FILE := $(SSL_PATH)/localhost.pem
 .PHONY: all clean test install package certificates server-wss server-ws client-dart-ws client-dart-wss test-dart-watch
 
 # Start the development environment using tmuxinator
-env:
+shell:
 	tmuxinator
 
 $(SSL_CERT_FILE):
@@ -143,7 +143,7 @@ package: clean
 	poetry build
 	twine check dist/*
 
-publish-pypi: dist
+publish-pypi: package
 	twine upload --verbose -r testpypi dist/*
 
 publish-dart:

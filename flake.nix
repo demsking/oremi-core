@@ -62,6 +62,7 @@
             prospector
             pre-commit
             editorconfig-checker
+            python310Packages.autopep8
             python310Packages.doc8
             python310Packages.pyroma
             python310Packages.pre-commit-hooks

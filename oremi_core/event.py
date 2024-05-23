@@ -13,11 +13,9 @@
 # limitations under the License.
 # ==============================================================================
 import asyncio
-from typing import Callable
-from typing import Coroutine
-from typing import Dict
+from collections.abc import Callable
+from collections.abc import Coroutine
 from typing import Generic
-from typing import List
 from typing import TypeVar
 
 EventType = TypeVar('EventType')
@@ -33,7 +31,7 @@ class EventManager(Generic[EventType, EventData]):
     """
     Initialize the event manager.
     """
-    self._subscribers: Dict[EventType, List[Callable[[EventData], Coroutine]]] = {}
+    self._subscribers: dict[EventType, list[Callable[[EventData], Coroutine]]] = {}
 
   def subscribe(self, event_type: EventType, listener: Callable[[EventData], Coroutine[None, None, None]]) -> None:
     """
@@ -93,6 +91,7 @@ class Event:
 
   def __init__(self):
     self._value = False
+    self._raise_execption: Exception | None = None
 
   def __repr__(self):
     res = super().__repr__()
@@ -104,25 +103,34 @@ class Event:
     return self._value
 
   def set(self):
-    """Set the internal flag to true. All coroutines waiting for it to
-    become true are awakened. Coroutine that call wait() once the flag is
-    true will not block at all.
+    """
+    Set the internal flag to true.
+    All coroutines waiting for it to become true are awakened.
+    Coroutine that call wait() once the flag is true will not block at all.
     """
     self._value = True
 
+  def failed(self, exception: Exception) -> None:
+    """
+    Set the internal flag to false and raise an exception.
+    All coroutines waiting for it to become true are awakened.
+    Coroutine that call wait() once the flag is true will not block at all.
+    """
+    self._raise_execption = exception
+
   def clear(self):
-    """Reset the internal flag to false. Subsequently, coroutines calling
-    wait() will block until set() is called to set the internal flag
-    to true again."""
+    """
+    Set the internal flag to false and clear any pending exception.
+    """
     self._value = False
+    self._raise_execption = None
 
   async def wait(self):
-    """Block until the internal flag is true.
-
-    If the internal flag is true on entry, return True
-    immediately.  Otherwise, block until another coroutine calls
-    set() to set the flag to true, then return True.
+    """
+    Wait until the internal flag is true or until an exception is raised.
     """
     while not self._value:
       await asyncio.sleep(0.1)
-    return True
+      if self._raise_execption:
+        raise self._raise_execption
+    return not self._raise_execption
