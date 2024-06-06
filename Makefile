@@ -1,4 +1,4 @@
-APP_VERSION := $(shell python version.py)
+APP_VERSION := $(shell python version.py version)
 
 SSL_PATH := ./build/ssl
 SSL_CERT_FILE := $(SSL_PATH)/localhost.pem
@@ -115,7 +115,7 @@ coverage-html:
 	pytest --cov=oremi_core --cov-report=html
 
 install:
-	pip install twine pylint pytest-mock pytest pytest-cov pluggy pytest-asyncio reorder-python-imports
+	pip install pylint pytest-mock pytest pytest-cov pluggy pytest-asyncio
 	poetry install
 	dart pub -C dart/ get
 
