@@ -80,18 +80,54 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
   async def on_connection_cancelled(self) -> None:
     pass
 
-  async def connect(self, uri: str, auto_reconnect: bool = True, *, interval: int = 5) -> None:
+  async def connect(
+    self,
+    uri: str,
+    auto_reconnect: bool = True,
+    *,
+    auto_reconnect_interval: int = 5,
+    open_timeout: float | None = 10,
+    ping_interval: float | None = 20,
+    ping_timeout: float | None = 20,
+    close_timeout: float | None = None,
+  ) -> None:
     """
-    Connects to the given URI and starts listening for incoming messages.
+    Connects to a WebSocket server and handles the connection lifecycle.
 
     Args:
       uri (str): The URI of the WebSocket server to connect to.
-      auto_reconnect (bool): Whether or not to automatically reconnect on connection errors.
-      interval (int): The interval between reconnect attempts.
+      auto_reconnect (bool): Whether to automatically attempt to reconnect
+        if the connection is lost. Defaults to True.
+      auto_reconnect_interval (int): The interval in seconds to wait before
+        attempting to reconnect. Defaults to 5 seconds.
+      open_timeout (float | None): The timeout in seconds for the connection
+        opening. Defaults to 10 seconds.
+      ping_interval (float | None): The interval in seconds to send pings to
+        keep the connection alive. Defaults to 20 seconds.
+      ping_timeout (float | None): The timeout in seconds to wait for a pong
+        response to a ping. Defaults to 20 seconds.
+      close_timeout (float | None): The timeout in seconds to wait for the
+        connection to close. Defaults to None.
+
+    Returns:
+      None
+
+    Logs the connection attempt, manages the WebSocket connection lifecycle,
+    and handles reconnection logic if enabled. Invokes appropriate handlers
+    on connection events such as successful connection, message receipt,
+    and connection closure or errors.
     """
     self.logger.info(f'Connecting to {uri}')
     self._listening = True
-    async for websocket in connect(uri, user_agent_header=self.user_agent, close_timeout=0, ssl=self._ssl_context):
+    async for websocket in connect(
+      uri=uri,
+      user_agent_header=self.user_agent,
+      open_timeout=open_timeout,
+      ping_interval=ping_interval,
+      ping_timeout=ping_timeout,
+      close_timeout=close_timeout,
+      ssl=self._ssl_context,
+    ):
       if not self._listening:
         break
 
@@ -117,8 +153,8 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
         self.logger.error(f'Connection to {uri} closed with error code {exception.code}, reason "{exception.reason}"')
         await self.on_connection_closed(exception.code, exception.reason)
         if self._listening and auto_reconnect:
-          self.logger.warning(f'Reconnecting to {uri} in {interval} seconds...')
-          await asyncio.sleep(interval)
+          self.logger.warning(f'Reconnecting to {uri} in {auto_reconnect_interval} seconds...')
+          await asyncio.sleep(auto_reconnect_interval)
           continue
         self._listening = False
       except asyncio.CancelledError:

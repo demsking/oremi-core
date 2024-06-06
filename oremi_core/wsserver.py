@@ -119,6 +119,31 @@ class WebsocketServer(ABC):
     ping_timeout: Optional[float] = 20,
     close_timeout: Optional[float] = None,
   ) -> None:
+    """
+    Listens for incoming WebSocket connections and handles them.
+
+    Args:
+      host (str): The host address to bind the server to.
+      port (int): The port to bind the server to.
+      open_timeout (Optional[float]): The timeout in seconds for opening a
+        connection. Defaults to 10 seconds.
+      ping_interval (Optional[float]): The interval in seconds to send pings to
+        keep the connection alive. Defaults to 20 seconds.
+      ping_timeout (Optional[float]): The timeout in seconds to wait for a pong
+        response to a ping. Defaults to 20 seconds.
+      close_timeout (Optional[float]): The timeout in seconds to wait for the
+        connection to close. Defaults to None.
+
+    Returns:
+      None
+
+    Starts a WebSocket server that listens for incoming connections and handles
+    them using the specified handler.
+    Invokes the `on_listening` callback if defined, and waits indefinitely for
+    incoming connections.
+    If the server is cancelled, it invokes the `on_shutdown` callback if
+    defined.
+    """
     async with Websockets.serve(
       self._handler_client,
       host,
