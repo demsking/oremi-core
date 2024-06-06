@@ -1,4 +1,4 @@
-# Copyright 2023 Sébastien Demanou. All Rights Reserved.
+# Copyright 2024 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-import toml
+import os
+import sys
+import tomllib
 
-with open('pyproject.toml', encoding = 'utf-8') as file:
-  __version__ = toml.load(file)['tool']['poetry']['version']
-  del toml
+_current_dir = os.path.dirname(os.path.abspath(__file__))
+_pyproject_path = os.path.join(_current_dir, 'pyproject.toml')
 
-if __name__ == '__main__':
-  print(__version__)
+with open(_pyproject_path, 'rb') as file:
+  value = tomllib.load(file)['tool']['poetry'][sys.argv[1]]
+
+if isinstance(value, list):
+  value = ', '.join(value)
+
+print(value)

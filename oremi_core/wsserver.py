@@ -19,7 +19,6 @@ from abc import ABC
 from abc import abstractmethod
 from collections.abc import Callable
 from collections.abc import Coroutine
-from typing import Optional
 
 import websockets.legacy.server as Websockets
 import websockets.typing
@@ -39,9 +38,9 @@ class WebsocketServer(ABC):
     self,
     *,
     server_header: str,
-    cert_file: Optional[str] = None,
-    key_file: Optional[str] = None,
-    password: Optional[str] = None,
+    cert_file: str | None = None,
+    key_file: str | None = None,
+    password: str | None = None,
     on_listening: Callable[[], Coroutine] | None = None,
     on_shutdown: Callable[[], Coroutine] | None = None,
     logger: logging.Logger,
@@ -55,7 +54,7 @@ class WebsocketServer(ABC):
     self.on_shutdown = on_shutdown
     self.ssl_context = self._create_ssl_context(cert_file=cert_file, key_file=key_file, password=password)
 
-  def _create_ssl_context(self, *, cert_file: Optional[str] = None, key_file: Optional[str] = None, password: Optional[str] = None):
+  def _create_ssl_context(self, *, cert_file: str | None = None, key_file: str | None = None, password: str | None = None):
     ssl_context = None
 
     if cert_file:
@@ -114,10 +113,10 @@ class WebsocketServer(ABC):
     self,
     host: str,
     port: int,
-    open_timeout: Optional[float] = 10,
-    ping_interval: Optional[float] = 20,
-    ping_timeout: Optional[float] = 20,
-    close_timeout: Optional[float] = None,
+    open_timeout: float | None = 10,
+    ping_interval: float | None = 20,
+    ping_timeout: float | None = 20,
+    close_timeout: float | None = None,
   ) -> None:
     """
     Listens for incoming WebSocket connections and handles them.

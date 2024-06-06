@@ -20,10 +20,7 @@ classifiers = [
   "Topic :: Software Development :: Localization",
   "License :: OSI Approved :: Apache Software License",
   "Operating System :: POSIX :: Linux",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
 ]
 
 packages = [
@@ -38,7 +35,7 @@ include = []
 "Tracker" = "https://gitlab.com/demsking/oremi-core/-/issues"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+python = ">=3.12,<4.0"
 coloredlogs = "^15.0.1"
 websockets = "^11.0.3"
 python-dateutil = "^2.8.2"
@@ -59,7 +56,7 @@ exclude_dirs = ["tests"]
 
 [tool.ruff]
 fix = true
-target-version = "py310"
+target-version = "py312"
 
 # Only enable rules that have safe autofixes;
 # only enable rules that are relevant to stubs

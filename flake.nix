@@ -14,7 +14,7 @@
         packages = rec {
           default = pkgs.poetry2nix.mkPoetryApplication {
             projectDir = ./.;
-            python = pkgs.python38;
+            python = pkgs.python312;
             groups = [ ]; # TODO Find how to ignore dev dependencies
             preferWheels = false;
             overrides = pkgs.poetry2nix.defaultPoetryOverrides.extend(self: super: {
@@ -36,11 +36,10 @@
             # python
             dart
             poetry
-            python310
-            python310Packages.pip
-            python310Packages.wheel
-            python310Packages.virtualenv
-            python310Packages.toml
+            python312
+#             python312Packages.pip
+#             python312Packages.wheel
+#             python312Packages.virtualenv
 
             # tests
             nodePackages.nodemon
@@ -54,7 +53,6 @@
             nodejs
             hadolint
             check-jsonschema
-            gnutar
             gnumake
             bandit
             skjold
@@ -62,10 +60,12 @@
             prospector
             pre-commit
             editorconfig-checker
-            python310Packages.autopep8
-            python310Packages.doc8
-            python310Packages.pyroma
-            python310Packages.pre-commit-hooks
+#             python312Packages.doc8
+#             python312Packages.autopep8
+#             python312Packages.pyroma
+#             python312Packages.pyupgrade
+#             python312Packages.pre-commit-hooks
+#             python312Packages.reorder-python-imports
           ];
           shellHook = ''
             # Disable Dart analytics
