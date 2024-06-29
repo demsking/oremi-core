@@ -13,24 +13,39 @@
 # limitations under the License.
 # ==============================================================================
 import os
+from typing import Any
 
-
-def get_env_var(var_name: str, default_value=None):
+def get_env_var(
+  var_name: str,
+  *,
+  default_value: Any | None = None,
+  expected_type: type | None = None,
+) -> Any:
   """
   Get the environment variable or return the default value if it is missing.
   If no default value is provided, raise an error if the variable is missing.
+  Optionally, validate the type of the environment variable's value.
 
   Args:
     var_name (str): The name of the environment variable.
-    default_value (str, optional): The default value to return if the environment variable is not found.
+    default_value (Any, optional): The default value to return if the environment variable is not found.
+    expected_type (Type, optional): The expected type of the environment variable's value.
 
   Returns:
-    str: The value of the environment variable or the default value if the variable is not found.
+    Any: The value of the environment variable or the default value if the variable is not found.
 
   Raises:
     EnvironmentError: If the environment variable is not found and no default value is provided.
+    TypeError: If the environment variable's value does not match the expected type.
   """
   value = os.getenv(var_name, default_value)
   if value is None:
-    raise EnvironmentError(f"The environment variable '{var_name}' is missing and no default value is provided.")
+    raise OSError(f"The environment variable '{var_name}' is missing and no default value is provided.")
+
+  if expected_type is not None:
+    try:
+      value = expected_type(value)
+    except (ValueError, TypeError):
+      raise TypeError(f"The environment variable '{var_name}' should be of type {expected_type.__name__}.")
+
   return value
