@@ -15,7 +15,7 @@
 import os
 from typing import Any
 
-def get_env_var(
+def getenv(
   var_name: str,
   *,
   default_value: Any | None = None,
