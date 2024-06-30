@@ -126,16 +126,12 @@ outdated:
 update:
 	poetry update
 	dart pub -C dart/ upgrade
-	nix flake update
+	devbox update
 	pre-commit autoupdate
 
 # Clean up build artifacts and temporary files
 clean:
 	rm -rf dist/ build/
-
-build/packages/oremi-core-$(APP_VERSION):
-	mkdir -p $(shell dirname $@)
-	nix build -v . --out-link $@
 
 # Build a distribution of the project using poetry and twine
 package: clean
