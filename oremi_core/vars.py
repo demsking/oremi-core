@@ -15,11 +15,12 @@
 import os
 from typing import Any
 
+
 def getenv(
-  var_name: str,
+  name: str,
   *,
-  default_value: Any | None = None,
-  expected_type: type | None = None,
+  default: Any | None = None,
+  expected_type: type = str,
 ) -> Any:
   """
   Get the environment variable or return the default value if it is missing.
@@ -27,8 +28,8 @@ def getenv(
   Optionally, validate the type of the environment variable's value.
 
   Args:
-    var_name (str): The name of the environment variable.
-    default_value (Any, optional): The default value to return if the environment variable is not found.
+    name (str): The name of the environment variable.
+    default (Any, optional): The default value to return if the environment variable is not found.
     expected_type (Type, optional): The expected type of the environment variable's value.
 
   Returns:
@@ -38,14 +39,14 @@ def getenv(
     EnvironmentError: If the environment variable is not found and no default value is provided.
     TypeError: If the environment variable's value does not match the expected type.
   """
-  value = os.getenv(var_name, default_value)
+  value = os.getenv(name, default)
   if value is None:
-    raise OSError(f"The environment variable '{var_name}' is missing and no default value is provided.")
+    raise OSError(f"The environment variable '{name}' is missing and no default value is provided.")
 
   if expected_type is not None:
     try:
       value = expected_type(value)
     except (ValueError, TypeError):
-      raise TypeError(f"The environment variable '{var_name}' should be of type {expected_type.__name__}.")
+      raise TypeError(f"The environment variable '{name}' should be of type {expected_type.__name__}.")
 
   return value
