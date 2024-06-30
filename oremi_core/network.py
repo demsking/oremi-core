@@ -1,4 +1,4 @@
-# Copyright 2023 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +13,9 @@
 # limitations under the License.
 # ==============================================================================
 import socket
-from typing import Union
 
 
-def get_ipv4_address() -> Union[str, None]:
+def get_ipv4_address() -> str | None:
   # Get the hostname of the local machine
   hostname = socket.gethostname()
 

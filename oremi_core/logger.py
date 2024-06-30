@@ -1,4 +1,4 @@
-# Copyright 2023 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ import logging
 import traceback
 from logging import handlers
 from typing import Any
-from typing import Union
 
 import coloredlogs
 
@@ -54,7 +53,7 @@ class Logger(logging.Logger):
   """
   global_level = logging.DEBUG
 
-  def __init__(self, name: str, *, level: Union[int, None] = None, filename: Union[str, None] = None) -> None:
+  def __init__(self, name: str, *, level: int | None = None, filename: str | None = None) -> None:
     super().__init__(name, level = level or Logger.global_level)
 
     self.log_filename = filename
@@ -81,7 +80,7 @@ class Logger(logging.Logger):
     cls.global_level = level
 
   @classmethod
-  def create(cls, name: str, *, level: Union[int, None] = None, filename: Union[str, None] = None) -> 'Logger':
+  def create(cls, name: str, *, level: int | None = None, filename: str | None = None) -> 'Logger':
     """
     Creates a logger instance with the specified name.
 

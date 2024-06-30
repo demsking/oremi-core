@@ -76,7 +76,6 @@ repos:
         name: 'Lint Dockerfile with Hadolint'
         description: 'Lint Dockerfiles using `hadolint` to ensure best practices.'
         entry: hadolint
-        args: ['--ignore', 'DL3008', 'DL3013', 'DL3042']
         language: system
         files: Dockerfile
       - id: autopep8
@@ -127,7 +126,7 @@ repos:
       - id: bandit
         name: 'Security Analysis with Bandit'
         description: 'Run Bandit to detect security issues in Python code.'
-        args: [-c, bandit.yaml]
+        args: [-c, 'bandit.yaml']
 
   - repo: https://github.com/PyCQA/doc8
     rev: v1.1.1

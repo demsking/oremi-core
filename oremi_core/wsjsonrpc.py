@@ -1,4 +1,4 @@
-# Copyright 2023 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ from collections.abc import Coroutine
 from ssl import SSLContext
 from typing import Any
 from typing import Generic
-from typing import Optional
 from typing import TypeVar
 
 from .event import EventManager
@@ -44,7 +43,7 @@ class WebsocketJsonRpcClient(WebsocketClient, Generic[NotificationType, Notifica
     *,
     user_agent: str,
     logger: logging.Logger,
-    ssl: Optional[SSLContext] = None,
+    ssl: SSLContext | None = None,
   ) -> None:
     super().__init__(user_agent=user_agent, logger=logger, ssl=ssl)
 
@@ -83,10 +82,10 @@ class WebsocketJsonRpcClient(WebsocketClient, Generic[NotificationType, Notifica
   async def send_request(
     self,
     method: str,
-    params: list | Optional[dict] = None,
+    params: list | dict | None = None,
     *,
-    on_response: Optional[ResponseCallback] = None,
-    on_error: Optional[ResponseCallback] = None,
+    on_response: ResponseCallback | None = None,
+    on_error: ResponseCallback | None = None,
   ) -> None:
     data = {
       'id': self._request_id,

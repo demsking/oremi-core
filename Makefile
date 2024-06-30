@@ -115,7 +115,6 @@ coverage-html:
 	pytest --cov=oremi_core --cov-report=html
 
 install:
-	pip install pylint pytest-mock pytest pytest-cov pluggy pytest-asyncio
 	poetry install
 	dart pub -C dart/ get
 

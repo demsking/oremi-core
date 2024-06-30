@@ -1,4 +1,4 @@
-venv/
+.venv/
 .nix-node/
 htmlcov/
 coverage/
@@ -10,4 +10,5 @@ __pycache__/
 .directory
 .coverage
 .direnv/
+.ropeproject/
 *.log

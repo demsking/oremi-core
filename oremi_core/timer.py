@@ -1,4 +1,4 @@
-# Copyright 2023 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 import asyncio
 from collections.abc import Callable
 from collections.abc import Coroutine
-from typing import Optional
 
 __all__ = [
   'Timer',
@@ -37,7 +36,7 @@ class Timer:
       fn (Callable[[], Coroutine]): The function to call when the timer is up.
     """
     self._fn = fn
-    self._task: Optional[asyncio.TimerHandle] = None
+    self._task: asyncio.TimerHandle | None = None
     self.delay = delay
 
   def is_alive(self) -> bool:
