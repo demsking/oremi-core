@@ -39,7 +39,7 @@ Therefore:
 
 ## Development Setup
 
-1. [Install The Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer)
+1. [Install Devbox](https://www.jetify.com/devbox/docs/installing_devbox/)
 
 2. [Install `direnv` with your OS package manager](https://direnv.net/docs/installation.html#from-system-packages)
 
@@ -53,36 +53,26 @@ Therefore:
    direnv allow
    ```
 
-6. **Install dependencies**
+   > The next time you will launch your terminal and enter the top-level of your
+   > project, `direnv` will check for changes and will automatically load the
+   > Devbox environment.
+
+5. **Install dependencies**
 
    ```sh
    make install
    ```
 
-7. **Start environment**
+6. **Start environment**
 
    ```sh
-   make env
+   make shell
    ```
 
    This will starts a preconfigured Tmux session.
    Please see the [.tmuxinator.yml](.tmuxinator.yml) file.
 
-## Makefile targets
-
-| Target            | Description                                                            |
-|-------------------|------------------------------------------------------------------------|
-| env               | Start the development environment using tmuxinator.                    |
-| lint              | Run linting checks on the codebase using pre-commit.                   |
-| fix               | Automatically fix any linting issues found by ruff.                    |
-| test              | Run tests using pytest.                                                |
-| coverage          | Generate a coverage report for the codebase using pytest.              |
-| coverage-html     | Generate an HTML coverage report for the codebase using pytest.        |
-| outdated          | Show outdated dependencies using poetry.                               |
-| clean             | Clean up build artifacts and temporary files.                          |
-| dist              | Build a distribution of the project using poetry and twine.            |
-| publish           | Publish a distribution of the project to TestPyPI using twine.         |
-
+## Makefile Targets
 
 Please see the [Makefile](Makefile) for the full list of targets.
 
