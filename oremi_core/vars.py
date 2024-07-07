@@ -36,7 +36,7 @@ def getenv(
     Any: The value of the environment variable or the default value if the variable is not found.
 
   Raises:
-    EnvironmentError: If the environment variable is not found and no default value is provided.
+    OSError: If the environment variable is not found and no default value is provided.
     TypeError: If the environment variable's value does not match the expected type.
   """
   value = os.getenv(name, default)
@@ -50,7 +50,10 @@ def getenv(
   if expected_type is not None:
     try:
       value = expected_type(value)
-    except (ValueError, TypeError):
-      raise TypeError(f"The environment variable '{name}' should be of type {expected_type.__name__}.")
+    except (ValueError, TypeError) as error:
+      raise TypeError(
+        f"The environment variable '{name}' should be of type '{expected_type.__name__}'. "
+        f'Provided value: {value!r}, expected type: {expected_type.__name__}'
+      ) from error
 
   return value
