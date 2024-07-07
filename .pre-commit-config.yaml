@@ -84,6 +84,12 @@ repos:
         entry: autopep8
         language: system
         files: '\.py$'
+        args: [
+          '--in-place',
+          '--recursive',
+          # Error codes: https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
+          '--ignore', 'E1,E501',
+        ]
       - id: pylint
         name: 'Lint Python Code with Pylint'
         description: 'Lint Python code using `pylint`, focusing on error messages only.'

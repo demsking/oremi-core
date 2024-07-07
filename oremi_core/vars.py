@@ -17,13 +17,14 @@ import uuid
 from typing import Any
 
 _NONE = uuid.uuid4()
+_MISSING = str(uuid.uuid4())
 
 
 def getenv(
   name: str,
   *,
   default: Any | None = _NONE,
-  expected_type: type = str,
+  expected_type: type | None = None,
   choices: list[Any] | None = None,
 ) -> Any:
   """
@@ -46,20 +47,29 @@ def getenv(
     TypeError: If the environment variable's value does not match the expected type.
     ValueError: If the environment variable's value is not in the list of choices.
   """
-  value = os.getenv(name, default)
+  value = os.getenv(name, _MISSING)
+
+  if value == _MISSING:
+    value = default
 
   if value is _NONE:
     raise OSError(f"The environment variable '{name}' is missing and no default value is provided.")
 
+  if value is None:
+    return value
+
   if expected_type is list:
     if isinstance(value, str):
-      value = [item.strip() for item in value.split(',')]
+      if value == '':
+        value = []
+      else:
+        value = [item.strip() for item in value.split(',')]
     else:
       raise TypeError(
         f"The environment variable '{name}' should be a comma-separated string when expected_type is list. "
         f'Provided value: {value!r}.'
       )
-  else:
+  elif expected_type:
     try:
       value = expected_type(value)
     except (ValueError, TypeError) as error:
