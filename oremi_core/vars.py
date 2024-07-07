@@ -49,11 +49,11 @@ def getenv(
   """
   value = os.getenv(name, _MISSING)
 
-  if value == _MISSING:
+  if value == _MISSING or value == '' and default != _NONE:
     value = default
 
   if value is _NONE:
-    raise OSError(f"The environment variable '{name}' is missing and no default value is provided.")
+    raise OSError(f"The required environment variable '{name}' is missing.")
 
   if value is None:
     return value
@@ -64,9 +64,9 @@ def getenv(
         value = []
       else:
         value = [item.strip() for item in value.split(',')]
-    else:
+    elif not isinstance(value, list):
       raise TypeError(
-        f"The environment variable '{name}' should be a comma-separated string when expected_type is list. "
+        f"The environment variable '{name}' should be a comma-separated string. "
         f'Provided value: {value!r}.'
       )
   elif expected_type:

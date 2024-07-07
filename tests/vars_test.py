@@ -78,12 +78,15 @@ def test_getenv_choices():
 
 
 def test_getenv_empty_var():
-  assert getenv('EMPTY_VAR', default='default_value') == ''
-  assert getenv('EMPTY_VAR', default='default_value', expected_type=str) == ''
-  assert getenv('EMPTY_VAR', default=['default'], expected_type=list) == []
+  assert getenv('EMPTY_VAR', default='default_value') == 'default_value'
+  assert getenv('EMPTY_VAR', default='default_value', expected_type=str) == 'default_value'
+  assert getenv('EMPTY_VAR', default=['default'], expected_type=list) == ['default']
+  assert getenv('EMPTY_VAR', default=[''], expected_type=list) == ['']
+  assert getenv('EMPTY_VAR', default=[], expected_type=list) == []
 
 
 def test_getenv_with_default_none():
   assert getenv('MISSING_VAR', default=None) is None
   assert getenv('MISSING_VAR', default=None, expected_type=str) is None
   assert getenv('MISSING_VAR', default=None, expected_type=list) is None
+  assert getenv('EMPTY_VAR', default=None, expected_type=int) is None

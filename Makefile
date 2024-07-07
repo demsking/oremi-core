@@ -93,7 +93,7 @@ test-dart:
 	  --coverage ../coverage/dart
 
 test-python:
-	pytest
+	pytest -vv
 
 test: test-dart test-python
 
