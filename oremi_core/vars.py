@@ -40,6 +40,10 @@ def getenv(
     TypeError: If the environment variable's value does not match the expected type.
   """
   value = os.getenv(name, default)
+
+  if expected_type is str and not value and default is None:
+    value = None
+
   if value is None:
     raise OSError(f"The environment variable '{name}' is missing and no default value is provided.")
 
