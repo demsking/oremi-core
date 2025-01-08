@@ -146,6 +146,6 @@ publish-dart:
 
 publish: package
 	git commit pyproject.toml -m 'Release $(APP_VERSION)'
-	git tag v$(APP_VERSION)
 	$(MAKE) publish-pypi
+	git tag v$(APP_VERSION)
 	git push --tags origin main
