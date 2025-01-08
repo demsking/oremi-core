@@ -139,6 +139,9 @@ package: clean
 	twine check dist/*
 
 publish-pypi: package
+	twine upload --verbose dist/*
+
+publish-testpypi: package
 	twine upload --verbose -r testpypi dist/*
 
 publish-dart:
