@@ -20,7 +20,7 @@ classifiers = [
   "Topic :: Software Development :: Localization",
   "License :: OSI Approved :: Apache Software License",
   "Operating System :: POSIX :: Linux",
-  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.10",
 ]
 
 packages = [
@@ -35,7 +35,7 @@ include = []
 "Tracker" = "https://gitlab.com/demsking/oremi-core/-/issues"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<4.0"
+python = ">=3.10,<4.0"
 coloredlogs = "^15.0.1"
 websockets = "^11.0.3"
 python-dateutil = "^2.8.2"
