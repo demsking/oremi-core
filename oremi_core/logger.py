@@ -1,4 +1,4 @@
-# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2025 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,17 +32,17 @@ class OremiFormatter(logging.Formatter):
   def __init__(
     self,
     fmt: str = _format,
-    datefmt: str = '%Y-%m-%d %H:%M:%S',
+    datefmt: str | None = None,
     style: str = '%',
     validate: bool = True,
   ) -> None:
-    super().__init__(fmt, datefmt, style, validate) # type: ignore
+    super().__init__(fmt, datefmt, style, validate)  # type: ignore
     self.error_fmt = '%(asctime)s - %(name)s - %(levelname)-s - %(message)s'
     self.error_formatter = logging.Formatter(self.error_fmt, datefmt)
 
   def formatException(self, ei: Any) -> str:
     tb = ''.join(traceback.format_exception(*ei))
-    last_line = tb.rstrip().rsplit('\n', maxsplit = 1000)[-1]
+    last_line = tb.rstrip().rsplit('\n', maxsplit=1000)[-1]
     file_name, line_number, function_name, _ = traceback.extract_tb(ei[2])[-1]
     return f'{last_line} (File: {file_name}, Function: {function_name}, Line: {line_number})'
 
@@ -54,7 +54,7 @@ class Logger(logging.Logger):
   global_level = logging.DEBUG
 
   def __init__(self, name: str, *, level: int | None = None, filename: str | None = None) -> None:
-    super().__init__(name, level = level or Logger.global_level)
+    super().__init__(name, level=level or Logger.global_level)
 
     self.log_filename = filename
 
@@ -66,10 +66,10 @@ class Logger(logging.Logger):
 
     if filename:
       rotating_file_handler = handlers.RotatingFileHandler(
-        filename = filename if filename else f'{name}.log',
-        maxBytes = 10 * 1024 * 1024, # 10MB
-        encoding = 'utf-8',
-        backupCount = 100,
+        filename=filename if filename else f'{name}.log',
+        maxBytes=10 * 1024 * 1024,  # 10MB
+        encoding='utf-8',
+        backupCount=100,
       )
 
       rotating_file_handler.setFormatter(formatter)
@@ -92,12 +92,12 @@ class Logger(logging.Logger):
     Returns:
       Logger: A logger instance.
     """
-    logger = cls(name, level = level, filename = filename)
+    logger = cls(name, level=level, filename=filename)
 
     coloredlogs.install(
-      logger = logger,
-      fmt = _format,
-      level = logger.level,
+      logger=logger,
+      fmt=_format,
+      level=logger.level,
     )
 
     return logger
@@ -112,4 +112,4 @@ class Logger(logging.Logger):
     Returns:
       Logger: A cloned logger instance with the new name.
     """
-    return Logger.create(f'{self.name} - {name}', level = self.level, filename = self.log_filename)
+    return Logger.create(f'{self.name} - {name}', level=self.level, filename=self.log_filename)
