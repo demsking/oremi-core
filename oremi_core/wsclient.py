@@ -1,4 +1,4 @@
-# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2025 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,13 @@ import logging
 from abc import ABC
 from abc import abstractmethod
 from ssl import SSLContext
+from typing import Any
 from typing import Generic
 from typing import Literal
 
 import websockets.legacy.client
 import websockets.typing
-from websockets.client import connect
+from websockets.client import connect  # pylint: disable=no-name-in-module
 from websockets.exceptions import ConnectionClosedError
 from websockets.exceptions import ConnectionClosedOK
 
@@ -38,7 +39,7 @@ __all__ = [
 ]
 
 WebsocketClientEventType = Literal['connected', 'message']
-WebsocketClientEventData = websockets.typing.Data
+WebsocketClientEventData = Any
 
 
 class WebsocketClient(Generic[EventType, EventData], ABC):
@@ -136,6 +137,11 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
       try:
         self.logger.info(f'Connected to {uri}')
         await self.on_connect()
+
+        if not self._connected:
+          # In case where disconnect() is called on on_connect(), break.
+          break
+
         self._available.set()
         async for message in websocket:
           await self.on_message_received(message)
@@ -164,7 +170,7 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
         await self.on_connection_cancelled()
         break
 
-  async def send_data(self, data: websockets.typing.Data) -> None:
+  async def send_data(self, data: WebsocketClientEventData) -> None:
     await self.ws.send(data)
 
   async def send_json(self, message: dict | list) -> None:
