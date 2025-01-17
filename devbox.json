@@ -5,6 +5,7 @@
     "poetry@latest",
     "tmux@latest",
     "gitmux@latest",
+    "git-lfs@latest",
     "git-secret@latest",
     "tmuxinator@latest",
     "gnumake@latest",
@@ -24,9 +25,9 @@
     "python311Packages.pytest-asyncio@latest"
   ],
   "env": {
-    "VENV_DIR": ".venv",
+    "VENV_DIR":   ".venv",
     "PYTHONPATH": ".:$VENV_DIR/lib/python3.11/site-packages:$PYTHONPATH",
-    "PATH": "$VENV_DIR/bin:$PATH"
+    "PATH":       "$VENV_DIR/bin:$PATH"
   },
   "shell": {
     "init_hook": [
