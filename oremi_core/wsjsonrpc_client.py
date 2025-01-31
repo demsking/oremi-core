@@ -22,8 +22,6 @@ from typing import Generic
 from typing import TypeVar
 
 from .event import EventData
-from .wsclient import ConnectionEventData
-from .wsclient import ConnectionEventType
 from .wsclient import WebSocketClient
 from .wsclient import WebSocketClientEventData
 
@@ -39,7 +37,7 @@ NotificationType = TypeVar('NotificationType')
 NotificationData = TypeVar('NotificationData')
 
 
-class WebSocketJsonRpcClient(WebSocketClient, Generic[NotificationType | ConnectionEventType, NotificationData | ConnectionEventData]):
+class WebSocketJsonRpcClient(WebSocketClient, Generic[NotificationType, NotificationData]):
   def __init__(
     self,
     *,

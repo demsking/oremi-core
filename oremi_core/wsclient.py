@@ -42,6 +42,7 @@ __all__ = [
 WebSocketClientEventType = Literal['connected', 'message']
 WebSocketClientEventData = Any
 
+ConnectionEventTypeT = TypeVar('ConnectionEventType')
 ConnectionEventData = TypeVar('ConnectionEventData')
 
 
@@ -51,7 +52,7 @@ class ConnectionEventType(StrEnum):
   CANCELLED = 'cancelled'
 
 
-class WebSocketClient(Generic[ConnectionEventType, ConnectionEventData], ABC):
+class WebSocketClient(Generic[ConnectionEventTypeT, ConnectionEventData], ABC):
   ws: websockets.legacy.client.WebSocketClientProtocol
 
   def __init__(
@@ -66,7 +67,7 @@ class WebSocketClient(Generic[ConnectionEventType, ConnectionEventData], ABC):
     self._listening = True
     self._ssl_context: SSLContext | None = ssl
     self._available = Event()
-    self._event_manager = EventManager[ConnectionEventType, ConnectionEventData]()
+    self._event_manager = EventManager[ConnectionEventTypeT | ConnectionEventType, ConnectionEventData]()
 
   @property
   def event_manager(self):
