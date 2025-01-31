@@ -28,7 +28,7 @@ __all__ = [
   'WebSocketServer',
 ]
 
-WebsocketConnection = Websockets.WebSocketServerProtocol
+WebSocketConnection = Websockets.WebSocketServerProtocol
 Data = bytes | str
 
 
@@ -68,21 +68,21 @@ class WebSocketServer(ABC):
       ssl_context.load_cert_chain(cert_file, key_file, password)
     return ssl_context
 
-  async def _handle_connection_close(self, websocket: WebsocketConnection, exception: ConnectionClosedOK | ConnectionClosedError) -> None:  # type: ignore
+  async def _handle_connection_close(self, websocket: WebSocketConnection, exception: ConnectionClosedOK | ConnectionClosedError) -> None:  # type: ignore
     if exception.reason:
       self.logger.info(f'Connection closed {websocket.remote_address} with code {exception.code}. Reason: {exception.reason}')
     else:
       self.logger.info(f'Connection closed {websocket.remote_address} with code {exception.code}')
 
   @abstractmethod
-  async def _process_request(self, websocket: WebsocketConnection, message: Data) -> None:
+  async def _process_request(self, websocket: WebSocketConnection, message: Data) -> None:
     pass
 
-  async def _handle_messages(self, websocket: WebsocketConnection) -> None:
+  async def _handle_messages(self, websocket: WebSocketConnection) -> None:
     async for message in websocket:
       await self._process_request(websocket, message)
 
-  async def _handle_new_connection(self, websocket: WebsocketConnection) -> None:
+  async def _handle_new_connection(self, websocket: WebSocketConnection) -> None:
     self.logger.info(f'Connection from {websocket.remote_address} {websocket.request_headers["User-Agent"]}')
 
     try:
@@ -96,7 +96,7 @@ class WebSocketServer(ABC):
     except ConnectionClosedOK as exception:
       await self._handle_connection_close(websocket, exception)
 
-  async def _handler_client(self, websocket: WebsocketConnection) -> None:
+  async def _handler_client(self, websocket: WebSocketConnection) -> None:
     try:
       await self._handle_new_connection(websocket)
     except (ConnectionClosedOK, ConnectionClosedError) as exception:
@@ -165,3 +165,42 @@ class WebSocketServer(ABC):
       finally:
         if self.on_shutdown:
           await self.on_shutdown()
+
+
+class BroadcastingWebSocketServer(WebSocketServer):
+  def __init__(
+    self,
+    *,
+    server_header: str,
+    cert_file: str | None = None,
+    key_file: str | None = None,
+    password: str | None = None,
+    on_listening: Callable[[], Coroutine] | None = None,
+    on_shutdown: Callable[[], Coroutine] | None = None,
+    logger: logging.Logger,
+    **kwargs,
+  ) -> None:
+    super().__init__(
+      server_header=server_header,
+      cert_file=cert_file,
+      key_file=key_file,
+      password=password,
+      on_listening=on_listening,
+      on_shutdown=on_shutdown,
+      logger=logger,
+      **kwargs,
+    )
+
+    self._clients: list[WebSocketConnection] = []
+
+  async def _handle_new_connection(self, websocket: WebSocketConnection) -> None:
+    self._clients.append(websocket)
+    await super()._handle_new_connection(websocket)
+
+  async def _handle_connection_close(self, websocket: WebSocketConnection, exception: Exception) -> None:
+    self._clients.remove(websocket)
+    await super()._handle_connection_close(websocket, exception)
+
+  async def broadcast(self, message: Data) -> None:
+    for client in self._clients:
+      await client.send(message)

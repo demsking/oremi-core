@@ -19,12 +19,12 @@ import logging
 
 from oremi_core.logger import Logger
 from oremi_core.wsserver import Data
-from oremi_core.wsserver import WebsocketConnection
+from oremi_core.wsserver import WebSocketConnection
 from oremi_core.wsserver import WebSocketServer
 
 
 class EchoServer(WebSocketServer):
-  async def _process_request(self, websocket: WebsocketConnection, message: Data) -> None:
+  async def _process_request(self, websocket: WebSocketConnection, message: Data) -> None:
     if isinstance(message, str) and 'jsonrpc' in message:
       request = json.loads(message)
       response = json.dumps({

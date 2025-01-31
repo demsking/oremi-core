@@ -20,7 +20,8 @@ from enum import StrEnum
 from typing import Any
 
 from oremi_core.event import EventManager
-from oremi_core.wsserver import WebsocketConnection
+from oremi_core.wsserver import Data
+from oremi_core.wsserver import WebSocketConnection
 from oremi_core.wsserver import WebSocketServer
 
 
@@ -58,15 +59,15 @@ class WebsocketJsonRpcServer(WebSocketServer):
   def register_method(self, name: str, method: Callable[..., Any]) -> None:
     self.methods[name] = method
 
-  async def _handle_new_connection(self, websocket: WebsocketConnection) -> None:
+  async def _handle_new_connection(self, websocket: WebSocketConnection) -> None:
     await self.event_manager.trigger(ServerEventType.NEW_CONNECTION, websocket)
     await super()._handle_new_connection(websocket)
 
-  async def _handle_connection_close(self, websocket: WebsocketConnection, exception: Exception) -> None:
+  async def _handle_connection_close(self, websocket: WebSocketConnection, exception: Exception) -> None:
     await self.event_manager.trigger(ServerEventType.CONNECTION_CLOSE, websocket)
     await super()._handle_connection_close(websocket, exception)
 
-  async def _process_request(self, websocket: WebsocketConnection, message: str) -> None:
+  async def _process_request(self, websocket: WebSocketConnection, message: str) -> None:
     try:
       request = json.loads(message)
       request_id = request.get('id')
@@ -120,13 +121,13 @@ class BroadcastingWebsocketJsonRpcServer(WebsocketJsonRpcServer):
       **kwargs,
     )
 
-    self._clients: list[WebsocketConnection] = []
+    self._clients: list[WebSocketConnection] = []
 
-  async def _handle_new_connection(self, websocket: WebsocketConnection) -> None:
+  async def _handle_new_connection(self, websocket: WebSocketConnection) -> None:
     self._clients.append(websocket)
     await super()._handle_new_connection(websocket)
 
-  async def _handle_connection_close(self, websocket: WebsocketConnection, exception: Exception) -> None:
+  async def _handle_connection_close(self, websocket: WebSocketConnection, exception: Exception) -> None:
     self._clients.remove(websocket)
     await super()._handle_connection_close(websocket, exception)
 
@@ -141,6 +142,6 @@ class BroadcastingWebsocketJsonRpcServer(WebsocketJsonRpcServer):
 
     await self.broadcast(event_message)
 
-  async def broadcast(self, message: str) -> None:
+  async def broadcast(self, message: Data) -> None:
     for client in self._clients:
       await client.send(message)
