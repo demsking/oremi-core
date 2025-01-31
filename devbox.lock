@@ -642,6 +642,70 @@
         }
       }
     },
+    "python311Packages.classify-imports@latest": {
+      "last_modified": "2024-12-03T12:40:06Z",
+      "resolved": "github:NixOS/nixpkgs/566e53c2ad750c84f6d31f9ccb9d00f823165550#python311Packages.classify-imports",
+      "source": "devbox-search",
+      "version": "4.2.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/hhw32fqz0pg3ddlnpayagc6c8v2zpcky-python3.11-classify-imports-4.2.0",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/5mbcgplfq85zisdaakzk4q050nf78zsg-python3.11-classify-imports-4.2.0-dist"
+            }
+          ],
+          "store_path": "/nix/store/hhw32fqz0pg3ddlnpayagc6c8v2zpcky-python3.11-classify-imports-4.2.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/cy1i8naiq0y2v0yj34b4w3k1q0lnmpk7-python3.11-classify-imports-4.2.0",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/dk6dfzvqblvqa9ivq3qcxvbszldhslq0-python3.11-classify-imports-4.2.0-dist"
+            }
+          ],
+          "store_path": "/nix/store/cy1i8naiq0y2v0yj34b4w3k1q0lnmpk7-python3.11-classify-imports-4.2.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/wzjgrjg6fcf2366la9wxgl4jaynyqi51-python3.11-classify-imports-4.2.0",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/a61qy7djlx0l6d67bkm42xbb07lrib9m-python3.11-classify-imports-4.2.0-dist"
+            }
+          ],
+          "store_path": "/nix/store/wzjgrjg6fcf2366la9wxgl4jaynyqi51-python3.11-classify-imports-4.2.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/cg10rjp6vk8p6wvq5pv631qykmz5zjl2-python3.11-classify-imports-4.2.0",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/wchk8m2n34s5syga6q0ika1jhw8qr4s4-python3.11-classify-imports-4.2.0-dist"
+            }
+          ],
+          "store_path": "/nix/store/cg10rjp6vk8p6wvq5pv631qykmz5zjl2-python3.11-classify-imports-4.2.0"
+        }
+      }
+    },
     "python311Packages.pluggy@latest": {
       "last_modified": "2024-06-12T20:55:33Z",
       "resolved": "github:NixOS/nixpkgs/a9858885e197f984d92d7fe64e9fff6b2e488d40#python311Packages.pluggy",

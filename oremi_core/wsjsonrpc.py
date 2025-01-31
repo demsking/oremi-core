@@ -1,4 +1,4 @@
-# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2025 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,17 +27,17 @@ from .wsclient import WebsocketClientEventData
 
 __all__ = [
   'ResponseCallback',
-  'WebsocketJsonRpcClient',
+  'WebSocketJsonRpcClient',
 ]
 
 ResponseCallback = Callable[[Any], Coroutine[None, None, None]]
-WebsocketJsonRpcClientOnMessage = Callable[[dict], Coroutine[None, None, None]]
+WebSocketJsonRpcClientOnMessage = Callable[[dict], Coroutine[None, None, None]]
 
 NotificationType = TypeVar('NotificationType')
 NotificationData = TypeVar('NotificationData')
 
 
-class WebsocketJsonRpcClient(WebsocketClient, Generic[NotificationType, NotificationData]):
+class WebSocketJsonRpcClient(WebsocketClient, Generic[NotificationType, NotificationData]):
   def __init__(
     self,
     *,

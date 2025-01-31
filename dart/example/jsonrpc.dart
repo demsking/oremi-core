@@ -49,7 +49,7 @@ Future<void> main(List<String> args) async {
     sslContext.setTrustedCertificates(argResults['cert-file']);
   }
 
-  final client = WebsocketJsonRpcClient(
+  final client = WebSocketJsonRpcClient(
     uri: sslContext != null ? 'wss://$host' : 'ws://$host',
     userAgent: 'myapp/1.0.0',
   );

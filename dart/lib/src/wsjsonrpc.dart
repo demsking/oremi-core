@@ -24,12 +24,12 @@ class InvalidMessageFormatError extends TypeError {
   InvalidMessageFormatError(this.message);
 }
 
-class WebsocketJsonRpcClient extends WebsocketClient {
+class WebSocketJsonRpcClient extends WebsocketClient {
   final Map<int, ResponseCallback> _requestCallbacks = {};
   final Map<int, ResponseCallback> _errorCallbacks = {};
   int _requestId = 1;
 
-  WebsocketJsonRpcClient({
+  WebSocketJsonRpcClient({
     required String uri,
     required String userAgent,
   }): super( uri: uri, userAgent: userAgent );

@@ -22,7 +22,8 @@
     "python311Packages.pytest-mock@latest",
     "python311Packages.pytest-cov@latest",
     "python311Packages.pluggy@latest",
-    "python311Packages.pytest-asyncio@latest"
+    "python311Packages.pytest-asyncio@latest",
+    "python311Packages.classify-imports@latest"
   ],
   "env": {
     "VENV_DIR":   ".venv",
