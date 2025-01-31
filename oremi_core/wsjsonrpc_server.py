@@ -16,18 +16,11 @@ import json
 import logging
 from collections.abc import Callable
 from collections.abc import Coroutine
-from enum import StrEnum
 from typing import Any
 
-from oremi_core.event import EventManager
 from oremi_core.wsserver import Data
 from oremi_core.wsserver import WebSocketConnection
 from oremi_core.wsserver import WebSocketServer
-
-
-class ServerEventType(StrEnum):
-  NEW_CONNECTION = 'new_connection'
-  CONNECTION_CLOSE = 'connection_close'
 
 
 class WebsocketJsonRpcServer(WebSocketServer):
@@ -54,18 +47,9 @@ class WebsocketJsonRpcServer(WebSocketServer):
       **kwargs,
     )
     self.methods = {}
-    self.event_manager = EventManager[ServerEventType, WebsocketJsonRpcServer]()
 
   def register_method(self, name: str, method: Callable[..., Any]) -> None:
     self.methods[name] = method
-
-  async def _handle_new_connection(self, websocket: WebSocketConnection) -> None:
-    await self.event_manager.trigger(ServerEventType.NEW_CONNECTION, websocket)
-    await super()._handle_new_connection(websocket)
-
-  async def _handle_connection_close(self, websocket: WebSocketConnection, exception: Exception) -> None:
-    await self.event_manager.trigger(ServerEventType.CONNECTION_CLOSE, websocket)
-    await super()._handle_connection_close(websocket, exception)
 
   async def _process_request(self, websocket: WebSocketConnection, message: str) -> None:
     try:

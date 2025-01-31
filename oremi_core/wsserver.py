@@ -19,10 +19,13 @@ from abc import ABC
 from abc import abstractmethod
 from collections.abc import Callable
 from collections.abc import Coroutine
+from enum import StrEnum
 
 import websockets.legacy.server as Websockets
 from websockets.exceptions import ConnectionClosedError
 from websockets.exceptions import ConnectionClosedOK
+
+from oremi_core.event import EventManager
 
 __all__ = [
   'WebSocketServer',
@@ -30,6 +33,11 @@ __all__ = [
 
 WebSocketConnection = Websockets.WebSocketServerProtocol
 Data = bytes | str
+
+
+class ServerEventType(StrEnum):
+  NEW_CONNECTION = 'new_connection'
+  CONNECTION_CLOSE = 'connection_close'
 
 
 class WebSocketServer(ABC):
@@ -52,6 +60,7 @@ class WebSocketServer(ABC):
     self.on_listening = on_listening
     self.on_shutdown = on_shutdown
     self.ssl_context = self._create_ssl_context(cert_file=cert_file, key_file=key_file, password=password)
+    self.event_manager = EventManager[ServerEventType, WebSocketServer]()
 
   def _create_ssl_context(self, *, cert_file: str | None = None, key_file: str | None = None, password: str | None = None):
     ssl_context = None
@@ -73,6 +82,8 @@ class WebSocketServer(ABC):
       self.logger.info(f'Connection closed {websocket.remote_address} with code {exception.code}. Reason: {exception.reason}')
     else:
       self.logger.info(f'Connection closed {websocket.remote_address} with code {exception.code}')
+
+    await self.event_manager.trigger(ServerEventType.CONNECTION_CLOSE, (websocket, exception))
 
   @abstractmethod
   async def _process_request(self, websocket: WebSocketConnection, message: Data) -> None:
@@ -98,6 +109,7 @@ class WebSocketServer(ABC):
 
   async def _handler_client(self, websocket: WebSocketConnection) -> None:
     try:
+      await self.event_manager.trigger(ServerEventType.NEW_CONNECTION, websocket)
       await self._handle_new_connection(websocket)
     except (ConnectionClosedOK, ConnectionClosedError) as exception:
       await self._handle_connection_close(websocket, exception)
