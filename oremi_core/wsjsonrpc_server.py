@@ -128,4 +128,5 @@ class BroadcastingWebsocketJsonRpcServer(WebsocketJsonRpcServer):
 
   async def broadcast(self, message: Data) -> None:
     for client in self._clients:
-      await client.send(message)
+      if not client.closed:
+        await client.send(message)
