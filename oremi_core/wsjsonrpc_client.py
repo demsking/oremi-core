@@ -22,7 +22,8 @@ from typing import Generic
 from typing import TypeVar
 
 from .event import EventData
-from .event_manager import EventManager
+from .wsclient import ConnectionEventData
+from .wsclient import ConnectionEventType
 from .wsclient import WebsocketClient
 from .wsclient import WebsocketClientEventData
 
@@ -38,7 +39,7 @@ NotificationType = TypeVar('NotificationType')
 NotificationData = TypeVar('NotificationData')
 
 
-class WebSocketJsonRpcClient(WebsocketClient, Generic[NotificationType, NotificationData]):
+class WebSocketJsonRpcClient(WebsocketClient, Generic[NotificationType | ConnectionEventType, NotificationData | ConnectionEventData]):
   def __init__(
     self,
     *,
@@ -51,21 +52,16 @@ class WebSocketJsonRpcClient(WebsocketClient, Generic[NotificationType, Notifica
     self._request_callbacks: dict[int, ResponseCallback] = {}
     self._error_callbacks: dict[int, ResponseCallback] = {}
     self._request_id = 1
-    self._event_manager = EventManager[NotificationType, NotificationData]()
-
-  @property
-  def event_manager(self):
-    return self._event_manager
 
   async def on_message_received(self, message: WebsocketClientEventData) -> None:
     data = json.loads(message)
 
     if 'id' in data:
-      await self.handle_message_dict(data)
+      await self._handle_message_dict(data)
     else:
-      await self.handle_message_notification(data)
+      await self._handle_message_notification(data)
 
-  async def handle_message_dict(self, data: dict) -> None:
+  async def _handle_message_dict(self, data: dict) -> None:
     request_id = data['id']
 
     if 'error' in data:
@@ -77,7 +73,7 @@ class WebSocketJsonRpcClient(WebsocketClient, Generic[NotificationType, Notifica
         await self._request_callbacks[request_id](data['result'])
         del self._request_callbacks[request_id]
 
-  async def handle_message_notification(self, data: dict) -> None:
+  async def _handle_message_notification(self, data: dict) -> None:
     await self._event_manager.trigger(data['method'], data['params'])
 
   async def send_request(

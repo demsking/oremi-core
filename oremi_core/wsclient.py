@@ -17,10 +17,12 @@ import json
 import logging
 from abc import ABC
 from abc import abstractmethod
+from enum import StrEnum
 from ssl import SSLContext
 from typing import Any
 from typing import Generic
 from typing import Literal
+from typing import TypeVar
 
 import websockets.legacy.client
 import websockets.typing
@@ -29,20 +31,27 @@ from websockets.exceptions import ConnectionClosedError
 from websockets.exceptions import ConnectionClosedOK
 
 from .event import Event
-from .event import EventData
-from .event_manager import EventType
+from .event_manager import EventManager
 
 __all__ = [
   'WebsocketClient',
-  'WebsocketClientEventType',
   'WebsocketClientEventData',
+  'WebsocketClientEventType',
 ]
 
 WebsocketClientEventType = Literal['connected', 'message']
 WebsocketClientEventData = Any
 
+ConnectionEventData = TypeVar('ConnectionEventData')
 
-class WebsocketClient(Generic[EventType, EventData], ABC):
+
+class ConnectionEventType(StrEnum):
+  CONNECTED = 'connected'
+  DISCONNECTED = 'disconnected'
+  CANCELLED = 'cancelled'
+
+
+class WebsocketClient(Generic[ConnectionEventType, ConnectionEventData], ABC):
   ws: websockets.legacy.client.WebSocketClientProtocol
 
   def __init__(
@@ -55,13 +64,17 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
     self.user_agent: str = user_agent
     self.logger: logging.Logger = logger
     self._listening = True
-    self._connected = False
     self._ssl_context: SSLContext | None = ssl
     self._available = Event()
+    self._event_manager = EventManager[ConnectionEventType, ConnectionEventData]()
+
+  @property
+  def event_manager(self):
+    return self._event_manager
 
   @property
   def connected(self) -> bool:
-    return self._connected
+    return self._available.is_set()
 
   @property
   def available(self) -> Event:
@@ -132,14 +145,14 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
         break
 
       self.ws = websocket
-      self._connected = True
 
       try:
         self.logger.info(f'Connected to {uri}')
         self._available.set()
         await self.on_connect()
+        await self._event_manager.trigger(ConnectionEventType.CONNECTED, self)
 
-        if not self._connected:
+        if not self._available.is_set():
           # In case where disconnect() is called on on_connect(), break.
           self._available.clear()
           break
@@ -148,27 +161,30 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
           await self.on_message_received(message)
       except ConnectionClosedOK as exception:
         self._listening = False
-        self._connected = False
         self._available.clear()
         self.logger.info(f'Connection to {uri} closed')
+
         await self.on_connection_closed(exception.code, exception.reason)
+        await self._event_manager.trigger(ConnectionEventType.DISCONNECTED, exception)
         break
       except ConnectionClosedError as exception:
-        self._connected = False
         self._available.clear()
         self.logger.error(f'Connection to {uri} closed with error code {exception.code}, reason "{exception.reason}"')
         await self.on_connection_closed(exception.code, exception.reason)
+        await self._event_manager.trigger(ConnectionEventType.DISCONNECTED, exception)
+
         if self._listening and auto_reconnect:
           self.logger.warning(f'Reconnecting to {uri} in {auto_reconnect_interval} seconds...')
           await asyncio.sleep(auto_reconnect_interval)
           continue
+
         self._listening = False
-      except asyncio.CancelledError:
+      except asyncio.CancelledError as error:
         self._listening = False
-        self._connected = False
         self._available.clear()
         self.logger.warning(f'Connection to {uri} cancelled')
         await self.on_connection_cancelled()
+        await self._event_manager.trigger(ConnectionEventType.CANCELLED, error)
         break
 
   async def send_data(self, data: WebsocketClientEventData) -> None:
@@ -184,5 +200,4 @@ class WebsocketClient(Generic[EventType, EventData], ABC):
     if hasattr(self, 'ws') and not self.ws.closed:
       await self.ws.close(1000, 'Client disconnect')
 
-    self._connected = False
     self._available.clear()
