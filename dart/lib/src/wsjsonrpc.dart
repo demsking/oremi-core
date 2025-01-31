@@ -24,7 +24,7 @@ class InvalidMessageFormatError extends TypeError {
   InvalidMessageFormatError(this.message);
 }
 
-class WebSocketJsonRpcClient extends WebsocketClient {
+class WebSocketJsonRpcClient extends WebSocketClient {
   final Map<int, ResponseCallback> _requestCallbacks = {};
   final Map<int, ResponseCallback> _errorCallbacks = {};
   int _requestId = 1;
@@ -35,7 +35,7 @@ class WebSocketJsonRpcClient extends WebsocketClient {
   }): super( uri: uri, userAgent: userAgent );
 
   @override
-  Future<void> onMessage(WebsocketClientEventData message) async {
+  Future<void> onMessage(WebSocketClientEventData message) async {
     final data = json.decode(message);
     if (data.containsKey('id')) {
       final requestId = data['id'];

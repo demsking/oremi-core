@@ -34,13 +34,13 @@ from .event import Event
 from .event_manager import EventManager
 
 __all__ = [
-  'WebsocketClient',
-  'WebsocketClientEventData',
-  'WebsocketClientEventType',
+  'WebSocketClient',
+  'WebSocketClientEventData',
+  'WebSocketClientEventType',
 ]
 
-WebsocketClientEventType = Literal['connected', 'message']
-WebsocketClientEventData = Any
+WebSocketClientEventType = Literal['connected', 'message']
+WebSocketClientEventData = Any
 
 ConnectionEventData = TypeVar('ConnectionEventData')
 
@@ -51,7 +51,7 @@ class ConnectionEventType(StrEnum):
   CANCELLED = 'cancelled'
 
 
-class WebsocketClient(Generic[ConnectionEventType, ConnectionEventData], ABC):
+class WebSocketClient(Generic[ConnectionEventType, ConnectionEventData], ABC):
   ws: websockets.legacy.client.WebSocketClientProtocol
 
   def __init__(
@@ -84,7 +84,7 @@ class WebsocketClient(Generic[ConnectionEventType, ConnectionEventData], ABC):
     pass
 
   @abstractmethod
-  async def on_message_received(self, message: WebsocketClientEventData) -> None:
+  async def on_message_received(self, message: WebSocketClientEventData) -> None:
     pass
 
   async def on_connection_closed(self, code: int | None = None, reason: str | None = None) -> None:
@@ -187,7 +187,7 @@ class WebsocketClient(Generic[ConnectionEventType, ConnectionEventData], ABC):
         await self._event_manager.trigger(ConnectionEventType.CANCELLED, error)
         break
 
-  async def send_data(self, data: WebsocketClientEventData) -> None:
+  async def send_data(self, data: WebSocketClientEventData) -> None:
     await self.ws.send(data)
 
   async def send_json(self, message: dict | list) -> None:

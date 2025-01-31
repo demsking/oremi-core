@@ -25,12 +25,12 @@ import 'package:web_socket_channel/io.dart';
 class MockIOWebSocketChannel extends Mock implements IOWebSocketChannel {}
 class StreamSinkMock extends Mock implements StreamSink<dynamic> {}
 
-class TestWebsocketClient extends WebsocketClient {
-  TestWebsocketClient({required String uri, required String userAgent})
+class TestWebSocketClient extends WebSocketClient {
+  TestWebSocketClient({required String uri, required String userAgent})
       : super(uri: uri, userAgent: userAgent);
 
   @override
-  Future<void> onMessage(WebsocketClientEventData message) async {
+  Future<void> onMessage(WebSocketClientEventData message) async {
     sendJson({'request': message});
   }
 
@@ -42,7 +42,7 @@ class TestWebsocketClient extends WebsocketClient {
 }
 
 void main() {
-  group('WebsocketClient', () {
+  group('WebSocketClient', () {
     HttpServer server;
 
     test('communicates using existing WebSockets', () async {
@@ -57,7 +57,7 @@ void main() {
         });
       });
 
-      final client = TestWebsocketClient(uri: 'ws://localhost:${server.port}', userAgent: 'test-agent');
+      final client = TestWebSocketClient(uri: 'ws://localhost:${server.port}', userAgent: 'test-agent');
 
       expect(client.connect(), completes);
     });

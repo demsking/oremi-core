@@ -18,10 +18,10 @@ import 'dart:convert';
 
 import 'package:web_socket_channel/io.dart';
 
-typedef WebsocketClientEventType = String;
-typedef WebsocketClientEventData = dynamic;
+typedef WebSocketClientEventType = String;
+typedef WebSocketClientEventData = dynamic;
 
-abstract class WebsocketClient {
+abstract class WebSocketClient {
   final String uri;
   final String userAgent;
 
@@ -29,12 +29,12 @@ abstract class WebsocketClient {
   bool _connected = false;
   bool get connected => _connected;
 
-  WebsocketClient({
+  WebSocketClient({
     required this.uri,
     required this.userAgent,
   });
 
-  Future<void> onMessage(WebsocketClientEventData message);
+  Future<void> onMessage(WebSocketClientEventData message);
 
   Future<void> onConnect() async {
     print('Connected to $uri');

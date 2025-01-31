@@ -19,8 +19,8 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:oremi_core/src/wsclient.dart';
 
-class TestWebsocketClient extends WebsocketClient {
-  TestWebsocketClient({required super.uri, required super.userAgent});
+class TestWebSocketClient extends WebSocketClient {
+  TestWebSocketClient({required super.uri, required super.userAgent});
 
   @override
   Future<void> onMessage(message) async {
@@ -57,7 +57,7 @@ Future<void> main(List<String> args) async {
     sslContext.setTrustedCertificates(argResults['cert-file']);
   }
 
-  final client = TestWebsocketClient(
+  final client = TestWebSocketClient(
     uri: sslContext != null ? 'wss://$host' : 'ws://$host',
     userAgent: 'myapp/1.0.0',
   );

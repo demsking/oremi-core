@@ -1,4 +1,4 @@
-# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2025 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,51 +18,51 @@ import logging
 import ssl
 
 from oremi_core.logger import Logger
-from oremi_core.wsclient import WebsocketClient
-from oremi_core.wsclient import WebsocketClientEventData
+from oremi_core.wsclient import WebSocketClient
+from oremi_core.wsclient import WebSocketClientEventData
 
 
 def parse_arguments() -> argparse.Namespace:
-  parser = argparse.ArgumentParser(description = 'Oremi SDS Client')
+  parser = argparse.ArgumentParser(description='Oremi SDS Client')
 
   parser.add_argument(
     '--host',
-    type = str,
-    default = 'localhost',
-    help = 'Host address to connect to (default: localhost).',
+    type=str,
+    default='localhost',
+    help='Host address to connect to (default: localhost).',
   )
 
   parser.add_argument(
     '-p', '--port',
-    type = int,
-    default = 5023,
-    help = 'Port number to connect to (default: 5023).',
+    type=int,
+    default=5023,
+    help='Port number to connect to (default: 5023).',
   )
 
   parser.add_argument(
     '--cert-file',
-    type = str,
-    help = 'Path to the certificate file for secure connection.',
+    type=str,
+    help='Path to the certificate file for secure connection.',
   )
 
   return parser.parse_args()
 
 
-class TestWebsocketClient(WebsocketClient):
+class TestWebSocketClient(WebSocketClient):
   async def on_connect(self):
     await self.send_data('status = online')
     await self.send_json({'status': 'online'})
     await asyncio.sleep(2)
     await self.disconnect()
 
-  async def on_message_received(self, message: WebsocketClientEventData) -> None:
+  async def on_message_received(self, message: WebSocketClientEventData) -> None:
     self.logger.info(f'Receive: {message}')
 
 
 async def start():
   args = parse_arguments()
   uri = f'wss://{args.host}:{args.port}' if args.cert_file else f'ws://{args.host}:{args.port}'
-  logger = Logger.create('stt-client', level = logging.DEBUG)
+  logger = Logger.create('stt-client', level=logging.DEBUG)
   ssl_context = None
 
   if args.cert_file:
@@ -70,10 +70,10 @@ async def start():
     ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     ssl_context.load_verify_locations(args.cert_file)
 
-  client = TestWebsocketClient(
-    ssl = ssl_context,
-    user_agent = 'sdclient/1.0.0',
-    logger = logger,
+  client = TestWebSocketClient(
+    ssl=ssl_context,
+    user_agent='sdclient/1.0.0',
+    logger=logger,
   )
 
   await client.connect(uri)

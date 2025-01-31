@@ -24,8 +24,8 @@ from typing import TypeVar
 from .event import EventData
 from .wsclient import ConnectionEventData
 from .wsclient import ConnectionEventType
-from .wsclient import WebsocketClient
-from .wsclient import WebsocketClientEventData
+from .wsclient import WebSocketClient
+from .wsclient import WebSocketClientEventData
 
 __all__ = [
   'ResponseCallback',
@@ -39,7 +39,7 @@ NotificationType = TypeVar('NotificationType')
 NotificationData = TypeVar('NotificationData')
 
 
-class WebSocketJsonRpcClient(WebsocketClient, Generic[NotificationType | ConnectionEventType, NotificationData | ConnectionEventData]):
+class WebSocketJsonRpcClient(WebSocketClient, Generic[NotificationType | ConnectionEventType, NotificationData | ConnectionEventData]):
   def __init__(
     self,
     *,
@@ -53,7 +53,7 @@ class WebSocketJsonRpcClient(WebsocketClient, Generic[NotificationType | Connect
     self._error_callbacks: dict[int, ResponseCallback] = {}
     self._request_id = 1
 
-  async def on_message_received(self, message: WebsocketClientEventData) -> None:
+  async def on_message_received(self, message: WebSocketClientEventData) -> None:
     data = json.loads(message)
 
     if 'id' in data:
