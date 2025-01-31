@@ -25,14 +25,14 @@ from websockets.exceptions import ConnectionClosedError
 from websockets.exceptions import ConnectionClosedOK
 
 __all__ = [
-  'WebsocketServer',
+  'WebSocketServer',
 ]
 
 WebsocketConnection = Websockets.WebSocketServerProtocol
 Data = bytes | str
 
 
-class WebsocketServer(ABC):
+class WebSocketServer(ABC):
   def __init__(
     self,
     *,

@@ -21,7 +21,7 @@ from typing import Any
 
 from oremi_core.event import EventManager
 from oremi_core.wsserver import WebsocketConnection
-from oremi_core.wsserver import WebsocketServer
+from oremi_core.wsserver import WebSocketServer
 
 
 class ServerEventType(StrEnum):
@@ -29,7 +29,7 @@ class ServerEventType(StrEnum):
   CONNECTION_CLOSE = 'connection_close'
 
 
-class WebsocketJsonRpcServer(WebsocketServer):
+class WebsocketJsonRpcServer(WebSocketServer):
   def __init__(
     self,
     *,

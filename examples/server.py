@@ -1,4 +1,4 @@
-# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2025 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import logging
 from oremi_core.logger import Logger
 from oremi_core.wsserver import Data
 from oremi_core.wsserver import WebsocketConnection
-from oremi_core.wsserver import WebsocketServer
+from oremi_core.wsserver import WebSocketServer
 
 
-class EchoServer(WebsocketServer):
+class EchoServer(WebSocketServer):
   async def _process_request(self, websocket: WebsocketConnection, message: Data) -> None:
     if isinstance(message, str) and 'jsonrpc' in message:
       request = json.loads(message)
@@ -37,51 +37,51 @@ class EchoServer(WebsocketServer):
 
 
 def parse_arguments() -> argparse.Namespace:
-  parser = argparse.ArgumentParser(prog = 'test-server')
+  parser = argparse.ArgumentParser(prog='test-server')
 
   parser.add_argument(
     '--host',
-    type = str,
-    default = '127.0.0.1',
-    help = 'Host address to listen on (default: 127.0.0.1).',
+    type=str,
+    default='127.0.0.1',
+    help='Host address to listen on (default: 127.0.0.1).',
   )
 
   parser.add_argument(
     '-p', '--port',
-    type = int,
-    default = 5105,
-    help = 'Port number to listen on (default: 5105).',
+    type=int,
+    default=5105,
+    help='Port number to listen on (default: 5105).',
   )
 
   parser.add_argument(
     '--cert-file',
-    type = str,
-    help = 'Path to the certificate file for secure connection.',
+    type=str,
+    help='Path to the certificate file for secure connection.',
   )
 
   parser.add_argument(
     '--key-file',
-    type = str,
-    help = 'Path to the private key file for secure connection.',
+    type=str,
+    help='Path to the private key file for secure connection.',
   )
 
   parser.add_argument(
     '--password',
-    type = str,
-    help = 'Password to unlock the private key (if protected by a password).',
+    type=str,
+    help='Password to unlock the private key (if protected by a password).',
   )
 
   parser.add_argument(
     '--log-file',
-    type = str,
-    default = None,
-    help = 'Name of the log file.',
+    type=str,
+    default=None,
+    help='Name of the log file.',
   )
 
   parser.add_argument(
     '--verbose',
-    action = 'store_true',
-    help = 'Enable verbose logging.',
+    action='store_true',
+    help='Enable verbose logging.',
   )
 
   return parser.parse_args()
@@ -91,15 +91,15 @@ async def start() -> None:
   args = parse_arguments()
   verbose: bool = args.verbose
   log_level = logging.DEBUG if verbose else logging.INFO
-  logger = Logger.create('test-server', filename = args.log_file, level = log_level)
+  logger = Logger.create('test-server', filename=args.log_file, level=log_level)
   logger.info('Starting test server')
 
   server = EchoServer(
-    logger = logger,
-    cert_file = args.cert_file,
-    key_file = args.key_file,
-    password = args.password,
-    server_header = 'test-server/1.0.0',
+    logger=logger,
+    cert_file=args.cert_file,
+    key_file=args.key_file,
+    password=args.password,
+    server_header='test-server/1.0.0',
   )
 
   await server.listen(args.host, args.port)
