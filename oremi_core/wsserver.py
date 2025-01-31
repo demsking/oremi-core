@@ -1,4 +1,4 @@
-# Copyright 2023-2024 Sébastien Demanou. All Rights Reserved.
+# Copyright 2023-2025 Sébastien Demanou. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ from collections.abc import Callable
 from collections.abc import Coroutine
 
 import websockets.legacy.server as Websockets
-import websockets.typing
 from websockets.exceptions import ConnectionClosedError
 from websockets.exceptions import ConnectionClosedOK
 
@@ -30,7 +29,7 @@ __all__ = [
 ]
 
 WebsocketConnection = Websockets.WebSocketServerProtocol
-Data = websockets.typing.Data
+Data = bytes | str
 
 
 class WebsocketServer(ABC):
@@ -69,7 +68,7 @@ class WebsocketServer(ABC):
       ssl_context.load_cert_chain(cert_file, key_file, password)
     return ssl_context
 
-  def _handle_connection_close(self, websocket: WebsocketConnection, exception: ConnectionClosedOK | ConnectionClosedError) -> None:  # type: ignore
+  async def _handle_connection_close(self, websocket: WebsocketConnection, exception: ConnectionClosedOK | ConnectionClosedError) -> None:  # type: ignore
     if exception.reason:
       self.logger.info(f'Connection closed {websocket.remote_address} with code {exception.code}. Reason: {exception.reason}')
     else:
@@ -95,13 +94,13 @@ class WebsocketServer(ABC):
       if self.verbose:
         traceback.print_exc()
     except ConnectionClosedOK as exception:
-      self._handle_connection_close(websocket, exception)
+      await self._handle_connection_close(websocket, exception)
 
   async def _handler_client(self, websocket: WebsocketConnection) -> None:
     try:
       await self._handle_new_connection(websocket)
     except (ConnectionClosedOK, ConnectionClosedError) as exception:
-      self._handle_connection_close(websocket, exception)
+      await self._handle_connection_close(websocket, exception)
     except Exception as error:
       error_message = f'Unexpected Error: {error}'
       self.logger.error(error_message)
