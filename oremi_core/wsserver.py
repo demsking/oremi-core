@@ -25,7 +25,7 @@ import websockets.legacy.server as Websockets
 from websockets.exceptions import ConnectionClosedError
 from websockets.exceptions import ConnectionClosedOK
 
-from oremi_core.event import EventManager
+from .event_manager import EventManager
 
 __all__ = [
   'WebSocketServer',

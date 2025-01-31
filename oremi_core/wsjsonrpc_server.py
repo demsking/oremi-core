@@ -18,9 +18,9 @@ from collections.abc import Callable
 from collections.abc import Coroutine
 from typing import Any
 
-from oremi_core.wsserver import Data
-from oremi_core.wsserver import WebSocketConnection
-from oremi_core.wsserver import WebSocketServer
+from .wsserver import Data
+from .wsserver import WebSocketConnection
+from .wsserver import WebSocketServer
 
 
 class WebsocketJsonRpcServer(WebSocketServer):

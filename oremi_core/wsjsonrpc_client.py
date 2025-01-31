@@ -21,7 +21,8 @@ from typing import Any
 from typing import Generic
 from typing import TypeVar
 
-from .event import EventManager
+from .event import EventData
+from .event_manager import EventManager
 from .wsclient import WebsocketClient
 from .wsclient import WebsocketClientEventData
 
@@ -104,3 +105,22 @@ class WebSocketJsonRpcClient(WebsocketClient, Generic[NotificationType, Notifica
 
     await self.send_json(data)
     self._request_id += 1
+
+  async def exec(
+    self,
+    method: str,
+    params: list | dict | None = None,
+  ) -> Any:
+    event = EventData()
+
+    async def on_response(data: Any) -> None:
+      event.data = data
+      event.set()
+
+    async def on_error(error_message: str) -> None:
+      event.failed(Exception(error_message))
+
+    await self.send_request(method, params, on_response=on_response, on_error=on_error)
+    await event.wait()
+
+    return event.data
