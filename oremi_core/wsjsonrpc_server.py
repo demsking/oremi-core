@@ -59,7 +59,7 @@ class WebsocketJsonRpcServer(WebSocketServer):
       params = request.get('params', [])
 
       if method_name in self.methods:
-        result = await self.methods[method_name](*params)
+        result = await self.methods[method_name](params)
         response = {
           'jsonrpc': '2.0',
           'result': result,
