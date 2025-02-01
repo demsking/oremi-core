@@ -77,7 +77,9 @@ class WebSocketServer(ABC):
       ssl_context.load_cert_chain(cert_file, key_file, password)
     return ssl_context
 
-  async def _handle_connection_close(self, websocket: WebSocketConnection, exception: ConnectionClosedOK | ConnectionClosedError) -> None:  # type: ignore
+  async def _handle_connection_close(
+    self, websocket: WebSocketConnection, exception: ConnectionClosedOK | ConnectionClosedError
+  ) -> None:  # type: ignore
     if exception.reason:
       self.logger.info(f'Connection closed {websocket.remote_address} with code {exception.code}. Reason: {exception.reason}')
     else:
@@ -91,10 +93,22 @@ class WebSocketServer(ABC):
 
   async def _handle_messages(self, websocket: WebSocketConnection) -> None:
     async for message in websocket:
-      await self._process_request(websocket, message)
+      task = asyncio.create_task(
+        self._process_request(websocket, message),
+        name='Processing Request Task',
+      )
+      task.add_done_callback(self._handle_processing_done_task)
+
+  def _handle_processing_done_task(self, task: asyncio.Task) -> None:
+    try:
+      task.result()
+    except Exception as exception:
+      self.logger.error(f'Error in task {task.get_name()}: {exception}')
+      if self.verbose:
+        traceback.print_exc()
 
   async def _handle_new_connection(self, websocket: WebSocketConnection) -> None:
-    self.logger.info(f'Connection from {websocket.remote_address} {websocket.request_headers["User-Agent"]}')
+    self.logger.info(f"Connection from {websocket.remote_address} {websocket.request_headers['User-Agent']}")
 
     try:
       await self._handle_messages(websocket)
@@ -219,6 +233,4 @@ class BroadcastingWebSocketServer(WebSocketServer):
         try:
           await client.send(message)
         except Exception as exception:
-          self.logger.error(
-            f'Unexpected error occured when broadcasting to {client.id}: {exception}'
-          )
+          self.logger.error(f'Unexpected error occured when broadcasting to {client.id}: {exception}')
