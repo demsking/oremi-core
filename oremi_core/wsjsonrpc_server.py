@@ -133,4 +133,9 @@ class BroadcastingWebsocketJsonRpcServer(WebsocketJsonRpcServer):
   async def broadcast(self, message: Data) -> None:
     for client in self._clients:
       if not client.closed:
-        await client.send(message)
+        try:
+          await client.send(message)
+        except Exception as exception:
+          self.logger.error(
+            f'Unexpected error occured when broadcasting to {client.id}: {exception}'
+          )
