@@ -56,9 +56,10 @@ class WebsocketJsonRpcServer(WebSocketServer):
       request = json.loads(message)
       request_id = request.get('id')
       method_name = request.get('method')
-      params = request.get('params', [])
 
       if method_name in self.methods:
+        params = request.get('params', None)
+
         if params is None:
           result = await self.methods[method_name]()
         else:
