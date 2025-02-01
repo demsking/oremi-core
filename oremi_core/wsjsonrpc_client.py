@@ -100,7 +100,7 @@ class WebSocketJsonRpcClient(WebSocketClient, Generic[NotificationType, Notifica
     await self.send_json(data)
     self._request_id += 1
 
-  async def exec(
+  async def call(
     self,
     method: str,
     params: list | dict | None = None,

@@ -59,23 +59,27 @@ class WebsocketJsonRpcServer(WebSocketServer):
       params = request.get('params', [])
 
       if method_name in self.methods:
-        result = await self.methods[method_name](params)
+        if params:
+          result = await self.methods[method_name](params)
+        else:
+          result = await self.methods[method_name]()
+
         response = {
           'jsonrpc': '2.0',
-          'result': result,
           'id': request_id,
+          'result': result,
         }
       else:
         response = {
           'jsonrpc': '2.0',
-          'error': {'code': -32601, 'message': 'Method not found'},
           'id': request_id,
+          'error': {'code': -32601, 'message': 'Method not found'},
         }
     except Exception as exception:
       response = {
         'jsonrpc': '2.0',
-        'error': {'code': -32603, 'message': str(exception)},
         'id': request.get('id', None),
+        'error': {'code': -32603, 'message': str(exception)},
       }
 
     await websocket.send(json.dumps(response))
