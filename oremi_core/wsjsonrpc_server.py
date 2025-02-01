@@ -59,10 +59,10 @@ class WebsocketJsonRpcServer(WebSocketServer):
       params = request.get('params', [])
 
       if method_name in self.methods:
-        if params:
-          result = await self.methods[method_name](params)
-        else:
+        if params is None:
           result = await self.methods[method_name]()
+        else:
+          result = await self.methods[method_name](params)
 
         response = {
           'jsonrpc': '2.0',
@@ -136,6 +136,4 @@ class BroadcastingWebsocketJsonRpcServer(WebsocketJsonRpcServer):
         try:
           await client.send(message)
         except Exception as exception:
-          self.logger.error(
-            f'Unexpected error occured when broadcasting to {client.id}: {exception}'
-          )
+          self.logger.error(f'Unexpected error occured when broadcasting to {client.id}: {exception}')
