@@ -83,8 +83,8 @@ class WebSocketJsonRpcClient(WebSocketClient, Generic[NotificationType, Notifica
     on_error: ResponseCallback | None = None,
   ) -> None:
     data = {
-      'id': self._request_id,
       'jsonrpc': '2.0',
+      'id': self._request_id,
       'method': method,
     }
 
